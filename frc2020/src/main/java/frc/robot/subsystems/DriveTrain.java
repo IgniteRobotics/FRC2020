@@ -7,29 +7,29 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.PWMTalonSRX;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class DriveTrain extends SubsystemBase {
-  private PWMTalonSRX leftMaster = new PWMTalonSRX(Constants.kLeftMasterPort);
-  private PWMVictorSPX leftFollower = new PWMVictorSPX(Constants.kLeftFollowerPort);
-  private PWMVictorSPX leftFollower2 = new PWMVictorSPX(Constants.kLeftFollowerPort2);
-  private PWMTalonSRX rightMaster = new PWMTalonSRX(Constants.kRightMasterPort);
-  private PWMVictorSPX rightFollower = new PWMVictorSPX(Constants.kRightFollowerPort);
-  private PWMVictorSPX rightFollower2 = new PWMVictorSPX(Constants.kRightFollowerPort2);
-
-  private SpeedControllerGroup leftMotors = new SpeedControllerGroup(leftMaster, leftFollower, leftFollower2);
-  private SpeedControllerGroup rightMotors = new SpeedControllerGroup(rightMaster, rightFollower, rightFollower2);
-
-  private DifferentialDrive driveTrain = new DifferentialDrive(leftMotors, rightMotors);
+  private WPI_TalonSRX leftMaster;
+  private WPI_VictorSPX leftFollower;
+  private WPI_VictorSPX leftFollower2;
+  private WPI_TalonSRX rightMaster;
+  private WPI_VictorSPX rightFollower;
+  private WPI_VictorSPX rightFollower2;
   /**
    * Creates a new DriveTrain.
    */
-  public DriveTrain() {
+  public DriveTrain(int leftMasterID, int leftFollowerID, int leftFollower2ID, int rightMasterID, int rightFollowerID, int rightFollower2ID) {
+    leftMaster = new WPI_TalonSRX(leftMasterID);
+    leftFollower = new WPI_VictorSPX(leftFollowerID);
+    leftFollower2 = new WPI_VictorSPX(leftFollower2ID);
+    rightMaster = new WPI_TalonSRX(rightMasterID);
+    rightFollower = new WPI_VictorSPX(rightFollowerID);
+    rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
+
 
   }
 
@@ -39,7 +39,7 @@ public class DriveTrain extends SubsystemBase {
 
   }
 
-  public void arcadeDrive(double fwd, double rot) {
-    driveTrain.arcadeDrive(fwd, rot);
+  public void arcadeDrive(double throttle, double rotation, double deadband) {
+    
   }
 }

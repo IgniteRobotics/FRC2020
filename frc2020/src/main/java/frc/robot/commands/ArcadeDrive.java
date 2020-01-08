@@ -14,14 +14,16 @@ public class ArcadeDrive extends CommandBase {
   /**
    * Creates a new ArcadeDrive.
    */
-  private final DriveTrain m_driveTrain;
-  private final double m_forward;
-  private final double m_rotation;
+  private static DriveTrain m_driveTrain;
+  private static double m_throttle;
+  private static double m_rotation;
+  private static double m_deadband;
 
-  public ArcadeDrive(DriveTrain driveTrain, double fwd, double rot) {
+  public ArcadeDrive(DriveTrain driveTrain, double throttle, double rotation, double deadband) {
     m_driveTrain = driveTrain;
-    m_forward = fwd;
-    m_rotation = rot;
+    m_throttle = throttle;
+    m_rotation = rotation;
+    m_deadband = deadband;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
   }
@@ -34,7 +36,10 @@ public class ArcadeDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveTrain.arcadeDrive(m_forward, m_rotation);
+    double throttle = m_throttle;
+    double rotation = m_rotation;
+
+    m_driveTrain.arcadeDrive(-throttle, rotation, m_deadband);
   }
 
   // Called once the command ends or is interrupted.

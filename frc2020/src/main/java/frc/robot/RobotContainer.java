@@ -23,12 +23,12 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private AutoForward autoForward = new AutoForward();
-  private DriveTrain m_driveTrain = new DriveTrain();
+  private DriveTrain m_driveTrain = new DriveTrain(1, 2, 3, 4, 5, 6);
 
   XboxController m_driveController = new XboxController(Constants.kDriveControllerPort);
   XboxController m_manipulatorController = new XboxController(Constants.kManipControllerPort);
 
-  private ArcadeDrive arcadeDrive = new ArcadeDrive(m_driveTrain, m_driveController.getY(), m_driveController.getX());
+  private ArcadeDrive arcadeDrive = new ArcadeDrive(m_driveTrain, m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_Y), m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_X), Constants.kDriveDeadband);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
