@@ -17,11 +17,13 @@ import frc.robot.Constants;
 public class DriveTrain extends SubsystemBase {
   private PWMTalonSRX leftMaster = new PWMTalonSRX(Constants.kLeftMasterPort);
   private PWMVictorSPX leftFollower = new PWMVictorSPX(Constants.kLeftFollowerPort);
+  private PWMVictorSPX leftFollower2 = new PWMVictorSPX(Constants.kLeftFollowerPort2);
   private PWMTalonSRX rightMaster = new PWMTalonSRX(Constants.kRightMasterPort);
   private PWMVictorSPX rightFollower = new PWMVictorSPX(Constants.kRightFollowerPort);
+  private PWMVictorSPX rightFollower2 = new PWMVictorSPX(Constants.kRightFollowerPort2);
 
-  private SpeedControllerGroup leftMotors = new SpeedControllerGroup(leftMaster, leftFollower);
-  private SpeedControllerGroup rightMotors = new SpeedControllerGroup(rightMaster, rightFollower);
+  private SpeedControllerGroup leftMotors = new SpeedControllerGroup(leftMaster, leftFollower, leftFollower2);
+  private SpeedControllerGroup rightMotors = new SpeedControllerGroup(rightMaster, rightFollower, rightFollower2);
 
   private DifferentialDrive driveTrain = new DifferentialDrive(leftMotors, rightMotors);
   /**

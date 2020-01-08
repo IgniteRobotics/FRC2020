@@ -24,5 +24,5 @@ public final class Constants {
     public static final int kRightFollowerPort2 = 6;
 
     public static final int kDriveControllerPort = 0;
-
+    public static final int kManipControllerPort = 1;
 }

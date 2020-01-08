@@ -26,6 +26,7 @@ public class RobotContainer {
   private DriveTrain m_driveTrain = new DriveTrain();
 
   XboxController m_driveController = new XboxController(Constants.kDriveControllerPort);
+  XboxController m_manipulatorController = new XboxController(Constants.kManipControllerPort);
 
   private ArcadeDrive arcadeDrive = new ArcadeDrive(m_driveTrain, m_driveController.getY(), m_driveController.getX());
   /**
@@ -45,6 +46,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
   }
 
 
