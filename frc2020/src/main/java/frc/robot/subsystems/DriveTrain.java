@@ -7,10 +7,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.Util;
 
 public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftMaster;
@@ -30,7 +34,24 @@ public class DriveTrain extends SubsystemBase {
     rightFollower = new WPI_VictorSPX(rightFollowerID);
     rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
 
+    leftMaster.setNeutralMode(NeutralMode.Brake);
+    leftFollower.setNeutralMode(NeutralMode.Brake);
+    leftFollower2.setNeutralMode(NeutralMode.Brake);
+    rightMaster.setNeutralMode(NeutralMode.Brake);
+    rightFollower.setNeutralMode(NeutralMode.Brake);
+    rightFollower2.setNeutralMode(NeutralMode.Brake);
 
+    leftFollower.follow(leftMaster);
+    leftFollower2.follow(leftMaster);
+    rightFollower.follow(rightMaster);
+    rightFollower2.follow(rightMaster);
+
+    leftMaster.setInverted(false);
+    leftFollower.setInverted(InvertType.FollowMaster);
+    leftFollower2.setInverted(InvertType.FollowMaster);
+    rightMaster.setInverted(true);
+    rightFollower.setInverted(InvertType.FollowMaster);
+    rightFollower2.setInverted(InvertType.FollowMaster);
   }
 
   @Override
@@ -40,6 +61,61 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void arcadeDrive(double throttle, double rotation, double deadband) {
-    
+
+    throttle = limit(throttle);
+    throttle = Util.applyDeadband(throttle, deadband);
+
+    rotation = limit(rotation);
+    rotation = Util.applyDeadband(rotation, deadband);
+
+    throttle = Math.copySign(throttle * throttle, throttle);
+    rotation = Math.copySign(rotation * rotation, rotation);
+
+    double leftMotorOutput;
+    double rightMotorOutput;
+
+    double maxInput = Math.copySign(Math.max(Math.abs(throttle), Math.abs(rotation)), throttle);
+
+    if (throttle >= 0.0) {
+      // First quadrant, else second quadrant
+      if (rotation >= 0.0) {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = throttle - rotation;
+      } else {
+        leftMotorOutput = throttle + rotation;
+        rightMotorOutput = maxInput;
+      }
+    } else {
+      // Third quadrant, else fourth quadrant
+      if (rotation >= 0.0) {
+        leftMotorOutput = throttle + rotation;
+        rightMotorOutput = maxInput;
+      } else {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = throttle - rotation;
+      }
+    }
+
+    setOpenLoopLeft(limit(leftMotorOutput));
+    setOpenLoopRight(limit(rightMotorOutput));
+
+  }
+
+  public void setOpenLoopLeft(double power) {
+    leftMaster.set(ControlMode.PercentOutput, power);
+  }
+
+  public void setOpenLoopRight(double power) {
+    rightMaster.set(ControlMode.PercentOutput, power);
+  }
+
+  private double limit(double value) {
+    if (value > 1.0) {
+      return 1.0;
+    }
+    if (value < -1.0) {
+      return -1.0;
+    }
+    return value;
   }
 }
