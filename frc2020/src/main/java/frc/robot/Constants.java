@@ -50,4 +50,8 @@ public final class Constants {
 	public static final int BUTTON_DPAD_LEFT = 270;
 	public static final int BUTTON_DPAD_RIGHT = 90;
 	public static final int BUTTON_DPAD_DOWN = 180;
+	/*
+	why not
+	public static final int BUTTON_DPAD_LEFT = -90
+	*/
 }
