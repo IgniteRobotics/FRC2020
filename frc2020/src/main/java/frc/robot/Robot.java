@@ -7,9 +7,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,6 +25,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private DriveTrain m_driveTrain;
+
+  private Joystick m_driveController;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -31,6 +37,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_driveTrain = new DriveTrain(Constants.kLeftMasterPort, Constants.kLeftFollowerPort, Constants.kLeftFollowerPort2, Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
+    m_driveController = new Joystick(Constants.kDriveControllerPort);
   }
 
   /**
@@ -96,6 +104,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    //m_driveTrain.arcadeDrive(m_driveController.getY(Hand.kLeft), m_driveController.getX(Hand.kRight), Constants.kDriveDeadband);
+    //m_driveTrain.setOpenLoopLeft(0.5);
+    m_driveTrain.setOpenLoopRight(0.5);
   }
 
   @Override

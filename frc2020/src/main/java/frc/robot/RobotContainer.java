@@ -8,7 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutoForward;
@@ -23,12 +25,12 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private AutoForward autoForward = new AutoForward();
-  private DriveTrain m_driveTrain = new DriveTrain(1, 2, 3, 4, 5, 6);
+  private DriveTrain m_driveTrain = new DriveTrain(Constants.kLeftMasterPort, Constants.kLeftFollowerPort, Constants.kLeftFollowerPort2, 
+                                                      Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
+  private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
+  // private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
 
-  XboxController m_driveController = new XboxController(Constants.kDriveControllerPort);
-  XboxController m_manipulatorController = new XboxController(Constants.kManipControllerPort);
-
-  private ArcadeDrive arcadeDrive = new ArcadeDrive(m_driveTrain, m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_Y), m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_X), Constants.kDriveDeadband);
+  private ArcadeDrive arcadeDrive = new ArcadeDrive(m_driveTrain, m_driveController.getY(Hand.kLeft), m_driveController.getX(Hand.kRight), Constants.kDriveDeadband);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */

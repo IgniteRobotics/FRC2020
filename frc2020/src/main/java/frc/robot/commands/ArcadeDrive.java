@@ -14,10 +14,10 @@ public class ArcadeDrive extends CommandBase {
   /**
    * Creates a new ArcadeDrive.
    */
-  private static DriveTrain m_driveTrain;
-  private static double m_throttle;
-  private static double m_rotation;
-  private static double m_deadband;
+  private DriveTrain m_driveTrain;
+  private double m_throttle;
+  private double m_rotation;
+  private double m_deadband;
 
   public ArcadeDrive(DriveTrain driveTrain, double throttle, double rotation, double deadband) {
     m_driveTrain = driveTrain;
