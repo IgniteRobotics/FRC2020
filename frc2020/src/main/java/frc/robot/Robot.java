@@ -104,9 +104,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //m_driveTrain.arcadeDrive(m_driveController.getY(Hand.kLeft), m_driveController.getX(Hand.kRight), Constants.kDriveDeadband);
-    //m_driveTrain.setOpenLoopLeft(0.5);
-    m_driveTrain.setOpenLoopRight(0.5);
   }
 
   @Override

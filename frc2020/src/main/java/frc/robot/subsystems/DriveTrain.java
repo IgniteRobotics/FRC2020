@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.Util;
 
 public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftMaster;
@@ -22,19 +23,15 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower;
   // private WPI_VictorSPX rightFollower2;
+
   /**
    * Creates a new DriveTrain.
    */
   public DriveTrain(int leftMasterID, int leftFollowerID, int leftFollower2ID, int rightMasterID, int rightFollowerID, int rightFollower2ID) {
-    // leftMaster = new WPI_TalonSRX(leftMasterID);
-    // leftFollower = new WPI_VictorSPX(leftFollowerID);
-    // rightMaster = new WPI_TalonSRX(rightMasterID);
-    // rightFollower = new WPI_VictorSPX(rightFollowerID);
-
-    leftMaster = new WPI_TalonSRX(4);
-    leftFollower = new WPI_VictorSPX(5);
-    rightMaster = new WPI_TalonSRX(1);
-    rightFollower = new WPI_VictorSPX(2);
+    leftMaster = new WPI_TalonSRX(leftMasterID);
+    leftFollower = new WPI_VictorSPX(leftFollowerID);
+    rightMaster = new WPI_TalonSRX(rightMasterID);
+    rightFollower = new WPI_VictorSPX(rightFollowerID);
 
     //leftFollower2 = new WPI_VictorSPX(leftFollower2ID);
     //rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
@@ -53,8 +50,8 @@ public class DriveTrain extends SubsystemBase {
     //leftFollower2.follow(leftMaster);
     //rightFollower2.follow(rightMaster);
 
-    leftMaster.setInverted(false);
-    rightMaster.setInverted(true);
+    leftMaster.setInverted(true);
+    rightMaster.setInverted(false);
 
     leftFollower.setInverted(InvertType.FollowMaster);
     rightFollower.setInverted(InvertType.FollowMaster);
@@ -70,8 +67,43 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void arcadeDrive(double throttle, double rotation, double deadband) {
-    setOpenLoopLeft(throttle);
-    setOpenLoopRight(rotation);
+    
+    throttle = limit(throttle);
+    throttle = Util.applyDeadband(throttle, deadband);
+
+    rotation = limit(rotation);
+    rotation = Util.applyDeadband(rotation, deadband);
+
+    throttle = Math.copySign(throttle * throttle, throttle);
+    rotation = Math.copySign(rotation * rotation, rotation);
+
+    double leftMotorOutput;
+    double rightMotorOutput;
+
+    double maxInput = Math.copySign(Math.max(Math.abs(throttle), Math.abs(rotation)), throttle);
+
+    if (throttle >= 0.0) {
+      // First quadrant, else second quadrant
+      if (rotation >= 0.0) {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = throttle - rotation;
+      } else {
+        leftMotorOutput = throttle + rotation;
+        rightMotorOutput = maxInput;
+      }
+    } else {
+      // Third quadrant, else fourth quadrant
+      if (rotation >= 0.0) {
+        leftMotorOutput = throttle + rotation;
+        rightMotorOutput = maxInput;
+      } else {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = throttle - rotation;
+      }
+    }
+
+    setOpenLoopLeft(limit(leftMotorOutput));
+    setOpenLoopRight(limit(rightMotorOutput));
   }
 
   public void setOpenLoopLeft(double power) {
@@ -80,5 +112,15 @@ public class DriveTrain extends SubsystemBase {
 
   public void setOpenLoopRight(double power) {
     rightMaster.set(ControlMode.PercentOutput, power);
+  }
+
+  private double limit(double value) {
+    if (value > 1.0) {
+      return 1.0;
+    }
+    if (value < -1.0) {
+      return -1.0;
+    }
+    return value;
   }
 }
