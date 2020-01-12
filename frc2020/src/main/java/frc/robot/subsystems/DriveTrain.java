@@ -19,39 +19,45 @@ import frc.robot.util.Util;
 public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftMaster;
   private WPI_VictorSPX leftFollower;
-  private WPI_VictorSPX leftFollower2;
+  // private WPI_VictorSPX leftFollower2;
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower;
-  private WPI_VictorSPX rightFollower2;
+  // private WPI_VictorSPX rightFollower2;
+
   /**
    * Creates a new DriveTrain.
    */
   public DriveTrain(int leftMasterID, int leftFollowerID, int leftFollower2ID, int rightMasterID, int rightFollowerID, int rightFollower2ID) {
     leftMaster = new WPI_TalonSRX(leftMasterID);
     leftFollower = new WPI_VictorSPX(leftFollowerID);
-    leftFollower2 = new WPI_VictorSPX(leftFollower2ID);
     rightMaster = new WPI_TalonSRX(rightMasterID);
     rightFollower = new WPI_VictorSPX(rightFollowerID);
-    rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
+
+    //leftFollower2 = new WPI_VictorSPX(leftFollower2ID);
+    //rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
 
     leftMaster.setNeutralMode(NeutralMode.Brake);
     leftFollower.setNeutralMode(NeutralMode.Brake);
-    leftFollower2.setNeutralMode(NeutralMode.Brake);
     rightMaster.setNeutralMode(NeutralMode.Brake);
     rightFollower.setNeutralMode(NeutralMode.Brake);
-    rightFollower2.setNeutralMode(NeutralMode.Brake);
+
+    //leftFollower2.setNeutralMode(NeutralMode.Brake);
+    //rightFollower2.setNeutralMode(NeutralMode.Brake);
 
     leftFollower.follow(leftMaster);
-    leftFollower2.follow(leftMaster);
     rightFollower.follow(rightMaster);
-    rightFollower2.follow(rightMaster);
 
-    leftMaster.setInverted(false);
+    //leftFollower2.follow(leftMaster);
+    //rightFollower2.follow(rightMaster);
+
+    leftMaster.setInverted(true);
+    rightMaster.setInverted(false);
+
     leftFollower.setInverted(InvertType.FollowMaster);
-    leftFollower2.setInverted(InvertType.FollowMaster);
-    rightMaster.setInverted(true);
     rightFollower.setInverted(InvertType.FollowMaster);
-    rightFollower2.setInverted(InvertType.FollowMaster);
+
+    //leftFollower2.setInverted(InvertType.FollowMaster);
+    //rightFollower2.setInverted(InvertType.FollowMaster);
   }
 
   @Override
@@ -61,7 +67,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void arcadeDrive(double throttle, double rotation, double deadband) {
-
+    
     throttle = limit(throttle);
     throttle = Util.applyDeadband(throttle, deadband);
 
@@ -98,7 +104,6 @@ public class DriveTrain extends SubsystemBase {
 
     setOpenLoopLeft(limit(leftMotorOutput));
     setOpenLoopRight(limit(rightMotorOutput));
-
   }
 
   public void setOpenLoopLeft(double power) {

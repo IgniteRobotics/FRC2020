@@ -8,10 +8,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.AutoForward;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -22,13 +23,12 @@ import frc.robot.subsystems.DriveTrain;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private AutoForward autoForward = new AutoForward();
-  private DriveTrain m_driveTrain = new DriveTrain(1, 2, 3, 4, 5, 6);
+  private RobotContainer m_robotContainer = new RobotContainer();
+  private DriveTrain m_driveTrain = new DriveTrain(Constants.kLeftMasterPort, Constants.kLeftFollowerPort, Constants.kLeftFollowerPort2, 
+                                                      Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
+  private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
+  private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
 
-  XboxController m_driveController = new XboxController(Constants.kDriveControllerPort);
-  XboxController m_manipulatorController = new XboxController(Constants.kManipControllerPort);
-
-  private ArcadeDrive arcadeDrive = new ArcadeDrive(m_driveTrain, m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_Y), m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_X), Constants.kDriveDeadband);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -36,7 +36,9 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    m_driveTrain.setDefaultCommand(arcadeDrive);
+    m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain
+                                        .arcadeDrive(m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_Y), 
+                                        m_driveController.getRawAxis(Constants.AXIS_RIGHT_STICK_X), Constants.kDriveDeadband), m_driveTrain));
   }
 
   /**
@@ -57,6 +59,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return autoForward;
+    return m_robotContainer.getAutonomousCommand();
   }
 }
