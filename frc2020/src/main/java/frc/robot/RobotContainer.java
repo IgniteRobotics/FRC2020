@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.AutoForward;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -23,7 +24,7 @@ import frc.robot.subsystems.DriveTrain;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private RobotContainer m_robotContainer = new RobotContainer();
+  private AutoForward m_autoFwd = new AutoForward();
   private DriveTrain m_driveTrain = new DriveTrain(Constants.kLeftMasterPort, Constants.kLeftFollowerPort, Constants.kLeftFollowerPort2, 
                                                       Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
@@ -59,6 +60,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_robotContainer.getAutonomousCommand();
+    return m_autoFwd;
   }
 }
