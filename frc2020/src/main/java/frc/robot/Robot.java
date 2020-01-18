@@ -47,11 +47,6 @@ public class Robot extends TimedRobot {
   private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
   private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
-
-  private DriveTrain m_driveTrain;
-
-  private Joystick m_driveController;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -66,8 +61,6 @@ public class Robot extends TimedRobot {
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
-    m_driveTrain = new DriveTrain(Constants.kLeftMasterPort, Constants.kLeftFollowerPort, Constants.kLeftFollowerPort2, Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
-    m_driveController = new Joystick(Constants.kDriveControllerPort);
   }
 
   /**
