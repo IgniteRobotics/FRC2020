@@ -8,11 +8,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Util;
 
@@ -23,6 +25,14 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower;
   private WPI_VictorSPX rightFollower2;
+
+  private double previousTimeStamp;
+  private double currentTimeStamp;
+  private double currentLeftRevs;
+  private double currentRightRevs;
+
+  private double previousLeftRevs = 0.0;
+  private double previousRightRevs = 0.0;
 
   /**
    * Creates a new DriveTrain.
@@ -58,12 +68,35 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower2.setInverted(InvertType.FollowMaster);
     rightFollower2.setInverted(InvertType.FollowMaster);
+
+    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    currentTimeStamp = System.currentTimeMillis();
+    currentLeftRevs = getLeftEncoderRevolutions();
+    currentRightRevs = -getRightEncoderRevolutions();
 
+    double deltaTimeMillis = currentTimeStamp - previousTimeStamp;
+
+    double deltaLRevs = currentLeftRevs - previousLeftRevs;
+    double deltaRRevs = currentRightRevs - previousRightRevs;
+
+    double leftRevsPerMil = deltaLRevs / deltaTimeMillis;
+    double rightRevsPerMil = deltaRRevs / deltaTimeMillis;
+
+    double leftRPM = leftRevsPerMil * 60000;
+    double rightRPM = rightRevsPerMil * 60000;
+
+    SmartDashboard.putNumber("Left RPM", leftRPM);
+    SmartDashboard.putNumber("Right RPM", rightRPM);
+
+    previousTimeStamp = currentTimeStamp;
+    previousLeftRevs = currentLeftRevs;
+    previousRightRevs = currentRightRevs;
   }
 
   public void arcadeDrive(double throttle, double rotation, double deadband) {
@@ -102,8 +135,11 @@ public class DriveTrain extends SubsystemBase {
       }
     }
 
-    setOpenLoopLeft(limit(leftMotorOutput));
-    setOpenLoopRight(limit(rightMotorOutput));
+    // setOpenLoopLeft(limit(leftMotorOutput));
+    // setOpenLoopRight(limit(rightMotorOutput));
+
+    setOpenLoopLeft(0.5);
+    setOpenLoopRight(0.5);
   }
 
   public void setOpenLoopLeft(double power) {
@@ -112,6 +148,21 @@ public class DriveTrain extends SubsystemBase {
 
   public void setOpenLoopRight(double power) {
     rightMaster.set(ControlMode.PercentOutput, power);
+  }
+
+  public double getLeftEncoderRevolutions() {
+    double revolutions = Util.getRevolutionsFromTicks(leftMaster.getSelectedSensorPosition());
+    return revolutions;
+  }
+
+  public double getRightEncoderRevolutions() {
+    double revolutions = Util.getRevolutionsFromTicks(rightMaster.getSelectedSensorPosition());
+    return revolutions;
+  }
+
+  public void zeroEncoders() {
+    leftMaster.setSelectedSensorPosition(0);
+    rightMaster.setSelectedSensorPosition(0);
   }
 
   private double limit(double value) {

@@ -18,10 +18,10 @@ package frc.robot;
  */
 public final class Constants {
     public static final int kLeftMasterPort = 1;
-    public static final int kLeftFollowerPort = 2;
-    public static final int kLeftFollowerPort2 = 3;
-    public static final int kRightMasterPort = 4;
-    public static final int kRightFollowerPort = 5;
+    public static final int kLeftFollowerPort = 3;
+    public static final int kLeftFollowerPort2 = 5;
+    public static final int kRightMasterPort = 2;
+    public static final int kRightFollowerPort = 4;
     public static final int kRightFollowerPort2 = 6;
 
     public static final int kDriveControllerPort = 0;
