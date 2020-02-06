@@ -14,9 +14,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Util;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftMaster;
@@ -34,10 +37,25 @@ public class DriveTrain extends SubsystemBase {
   private double previousLeftRevs = 0.0;
   private double previousRightRevs = 0.0;
 
+  private final double kP_TURN = 0.007;
+  private final double kI_TURN = 0;
+  private final double kD_TURN = 0;
+
+  
+  private final double MIN_TURN_POWER = 0.35;
+  
+  private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private static NetworkTable table = inst.getTable("Vision");
+
+  private double rotateToAngleRate;
+  
+
   /**
    * Creates a new DriveTrain.
    */
   public DriveTrain(int leftMasterID, int leftFollowerID, int leftFollower2ID, int rightMasterID, int rightFollowerID, int rightFollower2ID) {
+
+
     leftMaster = new WPI_TalonSRX(leftMasterID);
     leftFollower = new WPI_VictorSPX(leftFollowerID);
     rightMaster = new WPI_TalonSRX(rightMasterID);
@@ -71,6 +89,10 @@ public class DriveTrain extends SubsystemBase {
 
     leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+
+
+    //turnController = new edu.wpi.first.wpilibj.PIDController(kP_TURN, kP_TURN, kP_TURN, , output)
+    
   }
 
   @Override
@@ -173,5 +195,24 @@ public class DriveTrain extends SubsystemBase {
       return -1.0;
     }
     return value;
+  }
+
+  private double jesus() {
+    double amountOfJesusLove = 420;
+    return (amountOfJesusLove);
+  }
+
+  public void pidWrite(double output) {
+    rotateToAngleRate = output;
+  }
+
+  public void turnToAngle() {
+    if (Math.abs(rotateToAngleRate) <= MIN_TURN_POWER) {
+      this.setOpenLoopLeft(Math.copySign(MIN_TURN_POWER, rotateToAngleRate));
+      this.setOpenLoopRight(-Math.copySign(MIN_TURN_POWER, rotateToAngleRate));
+    } else {
+      this.setOpenLoopLeft(rotateToAngleRate);
+      this.setOpenLoopRight(-rotateToAngleRate);
+    }
   }
 }
