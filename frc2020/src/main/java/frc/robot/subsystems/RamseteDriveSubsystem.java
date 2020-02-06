@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -15,16 +17,20 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
+import frc.robot.util.Util;
 
 public class RamseteDriveSubsystem extends SubsystemBase {
 
@@ -44,6 +50,9 @@ public class RamseteDriveSubsystem extends SubsystemBase {
   private final AHRS navX = new AHRS(SPI.Port.kMXP);
 
   private final DifferentialDriveOdometry m_odometry;
+
+  private SlewRateLimiter speedRateLimiter = new SlewRateLimiter(Constants.SPEED_RATE_LIMIT_ARCADE);
+  private SlewRateLimiter rotationRateLimiter = new SlewRateLimiter(Constants.ROTATION_RATE_LIMIT_ARCADE);
   
   public RamseteDriveSubsystem() {
 
@@ -89,6 +98,9 @@ public class RamseteDriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_odometry.update(Rotation2d.fromDegrees(getHeading()), 
+                      Util.getMetersFromEncoderTicks(getLeftEncoderPosition()), 
+                      Util.getMetersFromEncoderTicks(getRightEncoderPosition()));
   }
 
   public Pose2d getPose() {
@@ -104,14 +116,50 @@ public class RamseteDriveSubsystem extends SubsystemBase {
     m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
-  public void arcadeDrive(double fwd, double rot) {
-    m_driveTrain.arcadeDrive(fwd, rot);
+  public void arcadeDrive(double speed, double rotation, boolean useSquares) {
+    double xSpeed = speedRateLimiter.calculate(safeClamp(speed));
+    double zRotation = -rotationRateLimiter.calculate(safeClamp(rotation));
+      if (useSquares) {
+        xSpeed *= Math.abs(xSpeed);
+        zRotation *= Math.abs(zRotation);
+      }
+      xSpeed *= Constants.kMaxSpeedMetersPerSecond;
+      zRotation *= Units.degreesToRadians(360);
+      var wheelSpeeds = Constants.kDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, zRotation));
+      tankDriveVelocity(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(-rightVolts);
     m_driveTrain.feed();
+  }
+
+  public void tankDriveVelocity(double leftVelocity, double rightVelocity) {
+    double leftAccel = (leftVelocity - Util.stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .20;
+    double rightAccel = (rightVelocity - Util.stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .20;
+    
+    double leftFeedForwardVolts = Constants.FEED_FORWARD.calculate(leftVelocity, leftAccel);
+    double rightFeedForwardVolts = Constants.FEED_FORWARD.calculate(rightVelocity, rightAccel);
+
+    leftMaster.set(
+        ControlMode.Velocity, 
+        Util.metersPerSecToStepsPerDecisec(leftVelocity), 
+        DemandType.ArbitraryFeedForward,
+        leftFeedForwardVolts / 12);
+    rightMaster.set(
+        ControlMode.Velocity,
+        Util.metersPerSecToStepsPerDecisec(rightVelocity),
+        DemandType.ArbitraryFeedForward,
+        rightFeedForwardVolts / 12);
+    m_driveTrain.feed();
+  }
+
+  private double safeClamp(double input) {
+    if (Double.isNaN(input)) {
+      return 0;
+    }
+    return MathUtil.clamp(input, -1, 1);
   }
 
   public void resetEncoders() {
@@ -140,7 +188,7 @@ public class RamseteDriveSubsystem extends SubsystemBase {
   }
 
   public double getHeading() {
-    return Math.IEEEremainder(navX.getAngle(), 360) * (Constants.kGyroReversed ? -1.0 : 1.0);
+    return Math.IEEEremainder(navX.getAngle(), 360.0d) * (Constants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public void setNeutralMode(NeutralMode neutralMode) {

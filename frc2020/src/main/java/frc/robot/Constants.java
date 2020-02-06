@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
@@ -53,6 +54,9 @@ public final class Constants {
 	public static final int BUTTON_DPAD_RIGHT = 90;
 	public static final int BUTTON_DPAD_DOWN = 180;
 
+	public static final double SPEED_RATE_LIMIT_ARCADE = 1.5;
+	public static final double ROTATION_RATE_LIMIT_ARCADE = 3.0;
+
 	public static final double ksVolts = 0.584;
 	public static final double kvVoltSecondsPerMeter = 2.04;
 	public static final double kaVoltSecondsSquaredPerMeter = 0.39;
@@ -74,4 +78,6 @@ public final class Constants {
 	public static final double kEncoderDistancePerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR;
 
 	public static final boolean kGyroReversed = false;
+
+	public static final SimpleMotorFeedforward FEED_FORWARD = new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 }

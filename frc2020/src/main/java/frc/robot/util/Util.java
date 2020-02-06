@@ -63,4 +63,13 @@ public class Util {
 	public static double getMetersFromEncoderTicks(double ticks) {
 		return (WHEEL_CIRCUMFERENCE_METERS / ENCODER_TICKS_PER_REVOLUTION) * ticks;
 	}
+
+	public static double stepsPerDecisecToMetersPerSec(int stepsPerDecisec) {
+		return getMetersFromEncoderTicks(stepsPerDecisec * 10);
+	}
+
+	
+	public static double metersPerSecToStepsPerDecisec(double metersPerSec) {
+		return getEncoderTicksFromMeters(metersPerSec) * .1d;
+	}
 }
