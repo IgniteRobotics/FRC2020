@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,10 +19,10 @@ package frc.robot;
  */
 public final class Constants {
     public static final int kLeftMasterPort = 1;
-    public static final int kLeftFollowerPort = 2;
-    public static final int kLeftFollowerPort2 = 3;
-    public static final int kRightMasterPort = 4;
-    public static final int kRightFollowerPort = 5;
+    public static final int kLeftFollowerPort = 3;
+    public static final int kLeftFollowerPort2 = 5;
+    public static final int kRightMasterPort = 2;
+    public static final int kRightFollowerPort = 4;
     public static final int kRightFollowerPort2 = 6;
 
     public static final int kDriveControllerPort = 0;
@@ -51,8 +52,26 @@ public final class Constants {
 	public static final int BUTTON_DPAD_LEFT = 270;
 	public static final int BUTTON_DPAD_RIGHT = 90;
 	public static final int BUTTON_DPAD_DOWN = 180;
-	/*
-	why not
-	public static final int BUTTON_DPAD_LEFT = -90
-	*/
+
+	public static final double ksVolts = 0.584;
+	public static final double kvVoltSecondsPerMeter = 2.04;
+	public static final double kaVoltSecondsSquaredPerMeter = 0.39;
+
+	public static final double kPDriveVel = 14.4;
+
+	public static final double kTrackwidthMeters = 0.67;
+	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+	public static final double kMaxSpeedMetersPerSecond = 2.0;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
+
+	public static final double kRamseteB = 2;
+	public static final double kRamseteZeta = 0.7;
+
+	public static final double kWheelDiameterMeters = 0.1524;
+	public static final double kEncoderCPR = 8192;
+
+	public static final double kEncoderDistancePerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR;
+
+	public static final boolean kGyroReversed = false;
 }

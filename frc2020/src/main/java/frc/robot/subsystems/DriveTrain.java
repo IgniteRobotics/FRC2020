@@ -71,7 +71,7 @@ public class DriveTrain extends SubsystemBase {
     throttle = limit(throttle);
     throttle = Util.applyDeadband(throttle, deadband);
 
-    rotation = limit(rotation);
+    rotation = -limit(rotation);
     rotation = Util.applyDeadband(rotation, deadband);
 
     throttle = Math.copySign(throttle * throttle, throttle);
