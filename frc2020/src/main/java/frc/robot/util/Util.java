@@ -70,6 +70,6 @@ public class Util {
 
 	
 	public static double metersPerSecToStepsPerDecisec(double metersPerSec) {
-		return getEncoderTicksFromMeters(metersPerSec) * .1d;
+		return getEncoderTicksFromMeters(metersPerSec) * .1;
 	}
 }

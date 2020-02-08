@@ -57,6 +57,8 @@ public final class Constants {
 	public static final double SPEED_RATE_LIMIT_ARCADE = 1.5;
 	public static final double ROTATION_RATE_LIMIT_ARCADE = 3.0;
 
+	public static final double SLOW_MODE_SPEED_MODIFIER = 0.5;
+
 	public static final double ksVolts = 0.584;
 	public static final double kvVoltSecondsPerMeter = 2.04;
 	public static final double kaVoltSecondsSquaredPerMeter = 0.39;
@@ -66,8 +68,9 @@ public final class Constants {
 	public static final double kTrackwidthMeters = 0.67;
 	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
-	public static final double kMaxSpeedMetersPerSecond = 2.0;
-	public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
+	public static final double kMaxSpeedMetersPerSecond = 1.0;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
+	public static final double kMaxAngularVelocity = 1.0;
 
 	public static final double kRamseteB = 2;
 	public static final double kRamseteZeta = 0.7;
