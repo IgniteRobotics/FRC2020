@@ -13,6 +13,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
+  /**
+   * Creates a new Sorter.
+   */
 
   public WPI_VictorSPX rollerMotor;
 
@@ -35,7 +38,7 @@ public class Intake extends SubsystemBase {
     rollerMotor.set(0);
   }
 
-  public void Eject(){
+  public void Eject() {
     rollerMotor.set(-intakePower);
   }
 
