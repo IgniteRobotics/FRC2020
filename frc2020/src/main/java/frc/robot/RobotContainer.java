@@ -9,35 +9,22 @@ package frc.robot;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.AutoForward;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 
 /**
@@ -54,7 +41,6 @@ public class RobotContainer {
   private RamseteDriveSubsystem m_driveTrain = new RamseteDriveSubsystem();
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
-  private AutoForward m_auto = new AutoForward();
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -66,11 +52,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     configureSubsystemCommands();
-
-    /*m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain
-                                        .arcadeDrive(m_driveController.getRawAxis(Constants.AXIS_LEFT_STICK_Y), 
-                                        m_driveController.getRawAxis(Constants.AXIS_RIGHT_STICK_X), Constants.kDriveDeadband), m_driveTrain));
-    */
+    
     try {
       var straightTrajectory = loadTrajectory("Straight");
       Transform2d transform = new Pose2d(0, 0, Rotation2d.fromDegrees(0)).minus(straightTrajectory.getInitialPose());
@@ -106,7 +88,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_auto;
+    return autoChooser.getSelected();
   }
 
   protected static Trajectory loadTrajectory(String trajectoryName) throws IOException {
