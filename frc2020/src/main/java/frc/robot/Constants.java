@@ -29,7 +29,20 @@ public final class Constants {
     public static final int kDriveControllerPort = 0;
     public static final int kManipControllerPort = 1;
 
-    public static final double kDriveDeadband = 0.03;
+	public static final double kDriveDeadband = 0.03;
+	
+	public static final int kIntakeMotorPort = 7; //TODO find out what these actually are.
+	public static final int kSorterMotorPort = 8;
+	public static final int kSpindexerMotorPort = 9;
+	public static final int kShooterTalonMotorPort = 10;
+	public static final int kShooterVictorMotorPort = 11;
+	public static final int kKickerMotorPort = 12;
+
+	public static final int kIntakeSolenoidPort = 0;
+	public static final int kIntakeSolenoidPort2 = 1;
+	public static final int kKickerSolenoidPort = 2;
+
+	public static final int kIntakeSensorPort = 0;
 
     public static final int BUTTON_A = 1;
 	public static final int BUTTON_B = 2;
