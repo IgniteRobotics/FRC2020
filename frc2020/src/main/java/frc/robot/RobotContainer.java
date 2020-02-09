@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.TurnToYaw;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 
 /**
@@ -42,6 +43,7 @@ public class RobotContainer {
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
+  private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -76,6 +78,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenPressed(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
+    new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visonDriveCommand);
 
   }
   private void configureSubsystemCommands() {
