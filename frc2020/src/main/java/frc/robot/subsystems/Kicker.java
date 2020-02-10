@@ -13,6 +13,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Kicker extends SubsystemBase {
+  /**
+   * Creates a new Shooter.
+   */
 
   public WPI_VictorSPX kickerMotor;
 
