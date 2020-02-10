@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void Run() {
-    shooterMotor.set(shootetrMotorPower);
+    shooterMotor.set(shooterMotorPower);
   }
 
   public void Stop() {
