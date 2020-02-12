@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TurnToYaw;
 import frc.robot.subsystems.RamseteDriveSubsystem;
+import frc.robot.commands.Velocityshoot;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -40,10 +42,12 @@ public class RobotContainer {
                                                   Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
   */
   private RamseteDriveSubsystem m_driveTrain = new RamseteDriveSubsystem();
+  private Shooter m_shooter = new Shooter();
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
   private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain);
+  private Velocityshoot Velocityshoot = new Velocityshoot(m_shooter);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -79,6 +83,7 @@ public class RobotContainer {
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenPressed(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visonDriveCommand);
+    new JoystickButton(m_manipController, Constants.BUTTON_A).whenHeld(Velocityshoot);
 
   }
   private void configureSubsystemCommands() {
