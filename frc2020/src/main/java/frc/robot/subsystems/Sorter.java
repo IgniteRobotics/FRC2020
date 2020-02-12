@@ -30,6 +30,10 @@ public class Sorter extends SubsystemBase {
     sorterMotor.set(ControlMode.PercentOutput, 0.5);
   }
 
+  public void stop() {
+    sorterMotor.set(ControlMode.PercentOutput, 0.5);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
