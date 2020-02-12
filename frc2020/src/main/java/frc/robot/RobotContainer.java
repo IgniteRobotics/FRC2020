@@ -83,7 +83,7 @@ public class RobotContainer {
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenPressed(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visonDriveCommand);
-    new JoystickButton(m_manipController, Constants.BUTTON_A).whenHeld(Velocityshoot);
+    new JoystickButton(m_manipController, Constants.BUTTON_A).whenHeld(Velocityshoot); 
 
   }
   private void configureSubsystemCommands() {

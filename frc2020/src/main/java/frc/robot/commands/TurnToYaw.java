@@ -15,6 +15,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class TurnToYaw extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("Vision");
+  float Kp = -0.1f;
+  float min_command = 0.05f;
   
   private final RamseteDriveSubsystem m_driveTrain;
   /**
@@ -29,18 +31,25 @@ public class TurnToYaw extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double yaw = (double) table.getEntry("yaw").getNumber(0);
-    if (yaw>5){
-      m_driveTrain.arcadeDrive(0, 30, false);
+    
+    float tx = (float) table.getEntry("tx").getNumber(0);
+    float heading_error = -tx;
+    double steering_adjust = 0.0f;
+    if (tx > 1.0)
+    {
+             steering_adjust =  Kp*heading_error - min_command;
     }
-    if (yaw<-5){
-      m_driveTrain.arcadeDrive(0, -30, false);
+    else if (tx < 1.0)
+    {
+            steering_adjust = Kp*heading_error + min_command;
     }
+    m_driveTrain.arcadeDrive(0,steering_adjust, false);
   }
 
   // Called once the command ends or is interrupted.
