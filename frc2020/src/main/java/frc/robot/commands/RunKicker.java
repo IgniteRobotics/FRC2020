@@ -8,35 +8,37 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Sorter;
+import frc.robot.subsystems.Spindexer;
 
-public class RunSorter extends CommandBase {
-  private final Sorter m_sorter; 
+public class RunKicker extends CommandBase {
+  private final Spindexer m_spindexer;
   /**
-   * Creates a new RunSorter.
+   * Creates a new RunKicker.
    */
-  public RunSorter(double speed) {
-    m_sorter = new Sorter();
-    m_sorter.sorterSpeed = speed;
+  public RunKicker(double speed) {
+    m_spindexer = new Spindexer();
+    m_spindexer.kickerSpeed = speed;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_sorter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_spindexer.toggleKicker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_sorter.inSorter();
+    m_spindexer.spinKickerWheel();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_sorter.stop();
+    m_spindexer.stopKicker();
+    m_spindexer.toggleKicker();
   }
 
   // Returns true when the command should end.

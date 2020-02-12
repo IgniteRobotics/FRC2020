@@ -17,9 +17,10 @@ public class SpinSpindexer extends CommandBase {
   /**
    * Creates a new SpinSpindexer.
    */
-  public SpinSpindexer(boolean icc) {
+  public SpinSpindexer(boolean icc, double speed) {
     m_spindexer = new Spindexer();
     isCounterClockWise = icc;
+    m_spindexer.spindexerSpeed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_spindexer);
   }
@@ -43,6 +44,7 @@ public class SpinSpindexer extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_spindexer.stop();
   }
 
   // Returns true when the command should end.
