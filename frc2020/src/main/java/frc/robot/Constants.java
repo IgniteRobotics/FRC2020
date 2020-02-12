@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,16 +20,29 @@ package frc.robot;
  */
 public final class Constants {
     public static final int kLeftMasterPort = 1;
-    public static final int kLeftFollowerPort = 2;
-    public static final int kLeftFollowerPort2 = 3;
-    public static final int kRightMasterPort = 4;
-    public static final int kRightFollowerPort = 5;
+    public static final int kLeftFollowerPort = 3;
+    public static final int kLeftFollowerPort2 = 5;
+    public static final int kRightMasterPort = 2;
+    public static final int kRightFollowerPort = 4;
     public static final int kRightFollowerPort2 = 6;
 
     public static final int kDriveControllerPort = 0;
     public static final int kManipControllerPort = 1;
 
-    public static final double kDriveDeadband = 0.03;
+	public static final double kDriveDeadband = 0.03;
+	
+	public static final int kIntakeMotorPort = 7; //TODO find out what these actually are.
+	public static final int kSorterMotorPort = 8;
+	public static final int kSpindexerMotorPort = 9;
+	public static final int kShooterTalonMotorPort = 10;
+	public static final int kShooterVictorMotorPort = 11;
+	public static final int kKickerMotorPort = 12;
+
+	public static final int kIntakeSolenoidPort = 0;
+	public static final int kIntakeSolenoidPort2 = 1;
+	public static final int kKickerSolenoidPort = 2;
+
+	public static final int kIntakeSensorPort = 0;
 
     public static final int BUTTON_A = 1;
 	public static final int BUTTON_B = 2;
@@ -51,8 +66,34 @@ public final class Constants {
 	public static final int BUTTON_DPAD_LEFT = 270;
 	public static final int BUTTON_DPAD_RIGHT = 90;
 	public static final int BUTTON_DPAD_DOWN = 180;
-	/*
-	why not
-	public static final int BUTTON_DPAD_LEFT = -90
-	*/
+
+	public static final double SPEED_RATE_LIMIT_ARCADE = 1.5;
+	public static final double ROTATION_RATE_LIMIT_ARCADE = 3.0;
+
+	public static final double SLOW_MODE_SPEED_MODIFIER = 0.5;
+
+	public static final double ksVolts = 0.584;
+	public static final double kvVoltSecondsPerMeter = 2.04;
+	public static final double kaVoltSecondsSquaredPerMeter = 0.39;
+
+	public static final double kPDriveVel = 14.4;
+
+	public static final double kTrackwidthMeters = 0.67;
+	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+	public static final double kMaxSpeedMetersPerSecond = 1.0;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
+	public static final double kMaxAngularVelocity = 1.0;
+
+	public static final double kRamseteB = 2;
+	public static final double kRamseteZeta = 0.7;
+
+	public static final double kWheelDiameterMeters = 0.1524;
+	public static final double kEncoderCPR = 8192;
+
+	public static final double kEncoderDistancePerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR;
+
+	public static final boolean kGyroReversed = false;
+
+	public static final SimpleMotorFeedforward FEED_FORWARD = new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 }

@@ -12,7 +12,9 @@ package frc.robot.util;
  */
 public class Util {
     private static int ENCODER_TICKS_PER_REVOLUTION = 8192;
-	private static int WHEEL_DIAMETER = 6;
+	private static int WHEEL_DIAMETER = 6; //in inches
+	private static double WHEEL_DIAMETER_METERS = 0.1524;
+	private static double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
 	public static double applyDeadband(double value, double deadband) {
 		if (Math.abs(value) > deadband) {
@@ -52,5 +54,22 @@ public class Util {
 		double inches = (revolutions) / (inchesPerRevolution);
 
 		return inches;
+	}
+
+	public static double getEncoderTicksFromMeters(double meters) {
+		return (meters / WHEEL_CIRCUMFERENCE_METERS) * ENCODER_TICKS_PER_REVOLUTION;
+	}
+
+	public static double getMetersFromEncoderTicks(double ticks) {
+		return (WHEEL_CIRCUMFERENCE_METERS / ENCODER_TICKS_PER_REVOLUTION) * ticks;
+	}
+
+	public static double stepsPerDecisecToMetersPerSec(int stepsPerDecisec) {
+		return getMetersFromEncoderTicks(stepsPerDecisec * 10);
+	}
+
+	
+	public static double metersPerSecToStepsPerDecisec(double metersPerSec) {
+		return getEncoderTicksFromMeters(metersPerSec) * .1;
 	}
 }
