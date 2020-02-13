@@ -21,10 +21,10 @@ import frc.robot.util.Util;
 public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftMaster;
   private WPI_VictorSPX leftFollower;
-  private WPI_VictorSPX leftFollower2;
+  // private WPI_VictorSPX leftFollower2;
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower;
-  private WPI_VictorSPX rightFollower2;
+  // private WPI_VictorSPX rightFollower2;
 
   private double previousTimeStamp;
   private double currentTimeStamp;
@@ -43,22 +43,22 @@ public class DriveTrain extends SubsystemBase {
     rightMaster = new WPI_TalonSRX(rightMasterID);
     rightFollower = new WPI_VictorSPX(rightFollowerID);
 
-    leftFollower2 = new WPI_VictorSPX(leftFollower2ID);
-    rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
+    // leftFollower2 = new WPI_VictorSPX(leftFollower2ID);
+    // rightFollower2 = new WPI_VictorSPX(rightFollower2ID);
 
     leftMaster.setNeutralMode(NeutralMode.Brake);
     leftFollower.setNeutralMode(NeutralMode.Brake);
     rightMaster.setNeutralMode(NeutralMode.Brake);
     rightFollower.setNeutralMode(NeutralMode.Brake);
 
-    leftFollower2.setNeutralMode(NeutralMode.Brake);
-    rightFollower2.setNeutralMode(NeutralMode.Brake);
+    // leftFollower2.setNeutralMode(NeutralMode.Brake);
+    // rightFollower2.setNeutralMode(NeutralMode.Brake);
 
     leftFollower.follow(leftMaster);
     rightFollower.follow(rightMaster);
 
-    leftFollower2.follow(leftMaster);
-    rightFollower2.follow(rightMaster);
+    // leftFollower2.follow(leftMaster);
+    // rightFollower2.follow(rightMaster);
 
     leftMaster.setInverted(true);
     rightMaster.setInverted(false);
@@ -66,8 +66,8 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.setInverted(InvertType.FollowMaster);
     rightFollower.setInverted(InvertType.FollowMaster);
 
-    leftFollower2.setInverted(InvertType.FollowMaster);
-    rightFollower2.setInverted(InvertType.FollowMaster);
+    // leftFollower2.setInverted(InvertType.FollowMaster);
+    // rightFollower2.setInverted(InvertType.FollowMaster);
 
     leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -135,11 +135,11 @@ public class DriveTrain extends SubsystemBase {
       }
     }
 
-    // setOpenLoopLeft(limit(leftMotorOutput));
-    // setOpenLoopRight(limit(rightMotorOutput));
+    setOpenLoopLeft(limit(leftMotorOutput));
+    setOpenLoopRight(limit(rightMotorOutput));
 
-    setOpenLoopLeft(0.5);
-    setOpenLoopRight(0.5);
+    // setOpenLoopLeft(0.5);
+    // setOpenLoopRight(0.5);
   }
 
   public void setOpenLoopLeft(double power) {
