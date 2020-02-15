@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnToYaw extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private static NetworkTable table = inst.getTable("Vision");
-  float Kp = -0.1f;
-  float min_command = 0.05f;
-  
+  private static NetworkTable table = inst.getTable("limelight");
+  boolean finished = false;
   private final RamseteDriveSubsystem m_driveTrain;
   /**
    * Creates a new TurnToYaw.
@@ -25,12 +24,15 @@ public class TurnToYaw extends CommandBase {
   public TurnToYaw(RamseteDriveSubsystem driveTrain) {
     addRequirements(driveTrain);
     this.m_driveTrain = driveTrain;
+    SmartDashboard.putNumber("Kp", 0.1);
+    SmartDashboard.putNumber("min_command", 0.05);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    finished = false;
 
   }
 
@@ -38,18 +40,25 @@ public class TurnToYaw extends CommandBase {
   @Override
   public void execute() {
     
-    float tx = (float) table.getEntry("tx").getNumber(0);
-    float heading_error = -tx;
-    double steering_adjust = 0.0f;
-    if (tx > 1.0)
+    double tx = (double) table.getEntry("tx").getNumber(0);
+    double heading_error = -tx;
+    double steering_adjust = 0.0;
+    
+    double Kp = (double) SmartDashboard.getEntry("Kp").getNumber(0.1);
+    double min_command = (double) SmartDashboard.getEntry("min_command").getNumber(0.05);
+    if (tx > 2.0)
     {
              steering_adjust =  Kp*heading_error - min_command;
     }
-    else if (tx < 1.0)
+    else if (tx < -2.0)
     {
             steering_adjust = Kp*heading_error + min_command;
     }
+    else {
+      finished = true;
+    }
     m_driveTrain.arcadeDrive(0,steering_adjust, false);
+    System.out.println(tx);
   }
 
   // Called once the command ends or is interrupted.
