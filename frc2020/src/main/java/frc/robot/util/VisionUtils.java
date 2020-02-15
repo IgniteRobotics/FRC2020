@@ -13,18 +13,18 @@ package frc.robot.util;
 public class VisionUtils {
 
     //the height of the camera from the floor, in inches.
-    public static final double cameraHeight = 24.0;
+    public static final double cameraHeight = 6.375;
 
     //the height of the upper port target
-    public static final double upperTargetHeight = 125.0;
+    public static final double upperTargetHeight = 33.0;
 
     //the angle of the camera, relative to the floor.
-    public static final double cameraAngle = 10.0;
+    public static final double cameraAngle = 0.0;
 
 
     public static  double getDistanceToTarget(double pitch){
         //d = (h2-h1) / tan(a1+a2)
-        return (upperTargetHeight - cameraHeight) / Math.tan(cameraAngle + pitch);
+        return (upperTargetHeight - cameraHeight) / Math.tan(Math.toRadians(cameraAngle + pitch));
     }
 
 

@@ -11,15 +11,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.VisionUtils;
 
 
 public class TargetPositioning extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private static NetworkTable table = inst.getTable("Vision");
-  private static float KpTurn = -0.1f;
-  private static float KpDistance = -0.1f;
-  private static float min_command = 0.05f;
+  private static NetworkTable table = inst.getTable("limelight");
+  private static double KpTurn = 0.02;
+  private static double KpDistance = 0.02;
+  private static double min_command = 0.05;
   // the range you want.
   private double targetDistance;
   //allowed margin of error
@@ -38,7 +39,7 @@ public class TargetPositioning extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // Called when the command is initially scheduled.
+  // Called wen the command is initially scheduled.
   @Override
   public void initialize() {
 
@@ -47,14 +48,36 @@ public class TargetPositioning extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("*****************************************");
     
-    float ty = (float) table.getEntry("ty").getNumber(0);
+    double ty = (double) table.getEntry("ty").getNumber(0);
     double currentDistance = VisionUtils.getDistanceToTarget(ty);
-    double distanceError = this.targetDistance - currentDistance;
+    double distanceError =   currentDistance - this.targetDistance;
+    double tv = (double) table.getEntry("tv").getNumber(0);
+
+    System.out.println("ty"+ty);
+    SmartDashboard.putNumber("ty", ty);
+    System.out.println("currentDistance"+currentDistance);
+    SmartDashboard.putNumber("currentDistance",currentDistance);
+    System.out.println("distance error"+distanceError);
+    SmartDashboard.putNumber("distance error",distanceError);
+    System.out.println(tv);
+    SmartDashboard.putNumber("tv", tv);
+    
+    
+
+    if(distanceError<marginOfErrorDist){
+      distanceError = 0;
+    }
+    if(tv < 1){
+      distanceError = 0;
+    }
+
     double drivingAdjust = KpDistance * distanceError;
 
-    float tx = (float) table.getEntry("tx").getNumber(0);
-    float headingError = -tx;
+
+    double tx = (double) table.getEntry("tx").getNumber(0);
+    double headingError = -tx;
     double steeringAdjust = 0.0;
     if (tx > 1.0)
     {
@@ -66,7 +89,9 @@ public class TargetPositioning extends CommandBase {
     }
 
 
-    m_driveTrain.arcadeDrive(drivingAdjust,steeringAdjust,false);
+    m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,false);
+    System.out.println("driving assist"+drivingAdjust);
+    SmartDashboard.putNumber("driving assist", drivingAdjust);
   }
 
   // Called once the command ends or is interrupted.
@@ -77,10 +102,12 @@ public class TargetPositioning extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    float ty = (float) table.getEntry("ty").getNumber(0);
-    float tx = (float) table.getEntry("tx").getNumber(0);
+    /*
+    double ty = (double) table.getEntry("ty").getNumber(0);
+    double tx = (double) table.getEntry("tx").getNumber(0);
     boolean distanceOK =  Math.abs(VisionUtils.getDistanceToTarget(ty)) <= marginOfErrorDist;
     boolean yawOK = Math.abs(tx) <= marginOfErrorTurn;
-    return(distanceOK && yawOK);
+    return(distanceOK && yawOK);*/
+    return(false);
   }
 }

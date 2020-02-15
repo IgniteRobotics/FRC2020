@@ -24,7 +24,7 @@ public class TurnToYaw extends CommandBase {
   public TurnToYaw(RamseteDriveSubsystem driveTrain) {
     addRequirements(driveTrain);
     this.m_driveTrain = driveTrain;
-    SmartDashboard.putNumber("Kp", 0.1);
+    SmartDashboard.putNumber("Kp", 0.02);
     SmartDashboard.putNumber("min_command", 0.05);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -44,8 +44,8 @@ public class TurnToYaw extends CommandBase {
     double heading_error = -tx;
     double steering_adjust = 0.0;
     
-    double Kp = (double) SmartDashboard.getEntry("Kp").getNumber(0.1);
-    double min_command = (double) SmartDashboard.getEntry("min_command").getNumber(0.05);
+    double Kp = (double) SmartDashboard.getEntry("Kp").getNumber(0.02);
+    double min_command = (double) SmartDashboard.getEntry("min_command").getNumber(0.02);
     if (tx > 2.0)
     {
              steering_adjust =  Kp*heading_error - min_command;
