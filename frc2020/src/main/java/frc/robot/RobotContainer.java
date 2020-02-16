@@ -47,7 +47,7 @@ public class RobotContainer {
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
-  private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain);
+  private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain, m_driveController);
   private Velocityshoot Velocityshoot = new Velocityshoot(m_shooter);
   private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64
   );

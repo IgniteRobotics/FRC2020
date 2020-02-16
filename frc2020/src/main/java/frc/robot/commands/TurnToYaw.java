@@ -11,18 +11,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 public class TurnToYaw extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private static NetworkTable table = inst.getTable("limelight");
+  private static NetworkTable table = inst.getTable("vision");
   boolean finished = false;
   private final RamseteDriveSubsystem m_driveTrain;
+  private final Joystick driverJoystick;
   /**
    * Creates a new TurnToYaw.
    */
-  public TurnToYaw(RamseteDriveSubsystem driveTrain) {
+  public TurnToYaw(RamseteDriveSubsystem driveTrain,Joystick driveController) {
     addRequirements(driveTrain);
+    this.driverJoystick = driveController;
     this.m_driveTrain = driveTrain;
     SmartDashboard.putNumber("Kp", 0.02);
     SmartDashboard.putNumber("min_command", 0.05);
@@ -40,7 +44,9 @@ public class TurnToYaw extends CommandBase {
   @Override
   public void execute() {
     
-    double tx = (double) table.getEntry("tx").getNumber(0);
+    double speed = driverJoystick.getRawAxis(Constants.AXIS_LEFT_STICK_Y);
+    
+    double tx = (double) table.getEntry("yaw").getNumber(0);
     double heading_error = -tx;
     double steering_adjust = 0.0;
     
@@ -57,7 +63,7 @@ public class TurnToYaw extends CommandBase {
     else {
       finished = true;
     }
-    m_driveTrain.arcadeDrive(0,steering_adjust, false);
+    m_driveTrain.arcadeDrive(speed,steering_adjust, false);
     System.out.println(tx);
   }
 
