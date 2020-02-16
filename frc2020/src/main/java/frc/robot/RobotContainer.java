@@ -29,6 +29,7 @@ import frc.robot.commands.TurnToYaw;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import frc.robot.commands.Velocityshoot;
 import frc.robot.subsystems.Shooter;
+import frc.robot.commands.TargetPositioning;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -48,6 +49,8 @@ public class RobotContainer {
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
   private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain);
   private Velocityshoot Velocityshoot = new Velocityshoot(m_shooter);
+  private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64
+  );
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -82,9 +85,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenPressed(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
-    new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visonDriveCommand);
+    new JoystickButton(m_driveController, Constants.BUTTON_A).whenHeld(visonDriveCommand);
     new JoystickButton(m_manipController, Constants.BUTTON_A).whenHeld(Velocityshoot); 
-
+    new JoystickButton(m_driveController, Constants.BUTTON_B).whenHeld(targetPositioning);
   }
   private void configureSubsystemCommands() {
     m_driveTrain.setDefaultCommand(teleDriveCommand);
