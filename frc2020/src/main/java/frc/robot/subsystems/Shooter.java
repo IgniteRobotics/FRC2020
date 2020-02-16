@@ -26,8 +26,8 @@ public class Shooter extends SubsystemBase {
    */
   public Shooter() {
     int canid = (int) SmartDashboard.getNumber("canid1", 8);
-    motor = new WPI_TalonSRX(1);//8
-    follow1 = new WPI_VictorSPX(3);
+    motor = new WPI_TalonSRX(8);//8
+    follow1 = new WPI_VictorSPX(10);
     //follow2 = new WPI_VictorSPX(5);
     motor.configFactoryDefault();
     motor.setNeutralMode(NeutralMode.Coast);
