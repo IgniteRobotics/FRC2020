@@ -19,7 +19,7 @@ public class TargetPositioning extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("limelight");
   private static double KpTurn = 0.02;
-  private static double KpDistance = 0.02;
+  private static double KpDistance = 0.015;
   private static double min_command = 0.05;
   // the range you want.
   private double targetDistance;
@@ -48,7 +48,7 @@ public class TargetPositioning extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("*****************************************");
+    System.out.println("*********************************************");
     
     double ty = (double) table.getEntry("ty").getNumber(0);
     double currentDistance = VisionUtils.getDistanceToTarget(ty);
@@ -66,9 +66,9 @@ public class TargetPositioning extends CommandBase {
     
     
 
-    if(distanceError<marginOfErrorDist){
+    /*if(distanceError<marginOfErrorDist){
       distanceError = 0;
-    }
+    }*/
     if(tv < 1){
       distanceError = 0;
     }
