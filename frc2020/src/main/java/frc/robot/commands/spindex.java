@@ -9,34 +9,32 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Spindexer;
-public class Kick extends CommandBase {
-  private static Spindexer kicker;
+public class spindex extends CommandBase {
+  private static Spindexer m_spindexer;
   /**
    * Creates a new kick.
    */
-  public Kick(Spindexer kicker) {
-    addRequirements(kicker);
+  public spindex(Spindexer spindexer) {
+    addRequirements(spindexer);
+    this.m_spindexer = spindexer;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    kicker.toggleKicker();
-    kicker.spinWheel();
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_spindexer.spinClockwise();
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    kicker.stopWheel();
-    kicker.toggleKicker();
   }
 
   // Returns true when the command should end.

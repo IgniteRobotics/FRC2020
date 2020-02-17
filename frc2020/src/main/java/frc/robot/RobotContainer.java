@@ -22,14 +22,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TurnToYaw;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import frc.robot.commands.Velocityshoot;
+import frc.robot.commands.spindex;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.TargetPositioning;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.Kick;
+import frc.robot.subsystems.Spindexer;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -44,14 +50,15 @@ public class RobotContainer {
   */
   private RamseteDriveSubsystem m_driveTrain = new RamseteDriveSubsystem();
   private Shooter m_shooter = new Shooter();
+  private Spindexer m_spindexer = new Spindexer();
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
   private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain, m_driveController);
   private Velocityshoot Velocityshoot = new Velocityshoot(m_shooter);
-  private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64
-  );
-
+  private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64);
+  private CommandGroupBase _shootcmdgrp = new SequentialCommandGroup(new ParallelCommandGroup(new TargetPositioning(m_driveTrain, 64), new Velocityshoot(m_shooter)), new ParallelCommandGroup(new Kick(m_spindexer),new spindex(m_spindexer)));//this runs the targeting and speeding up in parrelel and then runs the kicker and spindexer in parelell and then pulls up the kicker when done
+  private Kick kick = new Kick(m_spindexer);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /**
@@ -88,6 +95,7 @@ public class RobotContainer {
     new JoystickButton(m_driveController, Constants.BUTTON_A).whenHeld(visonDriveCommand);
     new JoystickButton(m_manipController, Constants.BUTTON_A).whenHeld(Velocityshoot); 
     new JoystickButton(m_driveController, Constants.BUTTON_B).whenHeld(targetPositioning);
+
   }
   private void configureSubsystemCommands() {
     m_driveTrain.setDefaultCommand(teleDriveCommand);
