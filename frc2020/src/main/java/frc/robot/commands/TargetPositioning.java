@@ -102,12 +102,10 @@ public class TargetPositioning extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    /*
     double ty = (double) table.getEntry("ty").getNumber(0);
     double tx = (double) table.getEntry("tx").getNumber(0);
     boolean distanceOK =  Math.abs(VisionUtils.getDistanceToTarget(ty)) <= marginOfErrorDist;
     boolean yawOK = Math.abs(tx) <= marginOfErrorTurn;
-    return(distanceOK && yawOK);*/
-    return(false);
+    return(distanceOK && yawOK);
   }
 }
