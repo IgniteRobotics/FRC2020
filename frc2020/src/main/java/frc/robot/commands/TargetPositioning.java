@@ -19,7 +19,7 @@ public class TargetPositioning extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("limelight");
   private static double KpTurn = 0.02;
-  private static double KpDistance = 0.015;
+  private static double KpDistance = 0.0125;
   private static double min_command = 0.05;
   // the range you want.
   private double targetDistance;
@@ -42,7 +42,7 @@ public class TargetPositioning extends CommandBase {
   // Called wen the command is initially scheduled.
   @Override
   public void initialize() {
-
+    table.getEntry("camMode").setNumber(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -97,6 +97,7 @@ public class TargetPositioning extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    table.getEntry("camMode").setNumber(1);
   }
 
   // Returns true when the command should end.

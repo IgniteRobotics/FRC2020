@@ -34,7 +34,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.commands.TargetPositioning;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.Kick;
+import frc.robot.commands.kick;
 import frc.robot.subsystems.Spindexer;
 
 /**
@@ -57,8 +57,8 @@ public class RobotContainer {
   private  TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain, m_driveController);
   private Velocityshoot Velocityshoot = new Velocityshoot(m_shooter);
   private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64);
-  private CommandGroupBase _shootcmdgrp = new SequentialCommandGroup(new ParallelCommandGroup(new TargetPositioning(m_driveTrain, 64), new Velocityshoot(m_shooter)), new ParallelCommandGroup(new Kick(m_spindexer),new spindex(m_spindexer)));//this runs the targeting and speeding up in parrelel and then runs the kicker and spindexer in parelell and then pulls up the kicker when done
-  private Kick kick = new Kick(m_spindexer);
+  //private CommandGroupBase _shootcmdgrp = new SequentialCommandGroup(new ParallelCommandGroup(new TargetPositioning(m_driveTrain, 64), new Velocityshoot(m_shooter)), new ParallelCommandGroup(new Kick(m_spindexer),new spindex(m_spindexer)));//this runs the targeting and speeding up in parrelel and then runs the kicker and spindexer in parelell and then pulls up the kicker when done
+  private kick kick = new kick(m_spindexer);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /**
