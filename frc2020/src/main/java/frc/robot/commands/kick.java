@@ -9,12 +9,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Spindexer;
-public class Kick extends CommandBase {
+public class kick extends CommandBase {
   private static Spindexer kicker;
   /**
    * Creates a new kick.
    */
-  public Kick(Spindexer kicker) {
+  public kick(Spindexer kicker) {
     addRequirements(kicker);
     // Use addRequirements() here to declare subsystem dependencies.
   }
