@@ -22,7 +22,7 @@ public class Spindexer extends SubsystemBase {
   private final WPI_TalonSRX spindexerMotor;
   private final WPI_VictorSPX kickerMotor;
   private final Solenoid kickerSolenoid;
-  private final DigitalInput spindexerHallEffectSensor;
+  // private final DigitalInput spindexerHallEffectSensor;
 
   private boolean isExtended;
 
@@ -47,7 +47,7 @@ public class Spindexer extends SubsystemBase {
 
     kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
 
-    spindexerHallEffectSensor = new DigitalInput(Constants.kSpindexerHallEffectPort);
+    // spindexerHallEffectSensor = new DigitalInput(Constants.kSpindexerHallEffectPort);
   }
 
   public void spinClockwise() {
@@ -93,9 +93,9 @@ public class Spindexer extends SubsystemBase {
     kickerMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
-  public boolean getSpindexerHallEffect() {
-    return spindexerHallEffectSensor.get();
-  }
+  // public boolean getSpindexerHallEffect() {
+  //   return spindexerHallEffectSensor.get();
+  // }
 
   @Override
   public void periodic() {

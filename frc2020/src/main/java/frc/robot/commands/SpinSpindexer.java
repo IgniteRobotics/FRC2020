@@ -17,8 +17,8 @@ public class SpinSpindexer extends CommandBase {
   /**
    * Creates a new SpinSpindexer.
    */
-  public SpinSpindexer(boolean icc, double speed) {
-    m_spindexer = new Spindexer();
+  public SpinSpindexer(boolean icc, double speed, Spindexer sd) {
+    m_spindexer = sd;
     isCounterClockWise = icc;
     m_spindexer.spindexerSpeed = speed;
     // Use addRequirements() here to declare subsystem dependencies.

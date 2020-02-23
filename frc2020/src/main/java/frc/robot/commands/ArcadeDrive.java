@@ -10,11 +10,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 
 public class ArcadeDrive extends CommandBase {
   
-  private final RamseteDriveSubsystem m_driveTrain;
+  // private final RamseteDriveSubsystem m_driveTrain;
+  private final DriveTrain m_driveTrain;
   private final Joystick driverJoystick;
 
   private boolean isSlowMode = false;
@@ -23,7 +25,7 @@ public class ArcadeDrive extends CommandBase {
   /**
    * Creates a new ArcadeDrive.
    */
-  public ArcadeDrive(Joystick driveController, RamseteDriveSubsystem driveTrain) {
+  public ArcadeDrive(Joystick driveController, /*RamseteDriveSubsystem driveTrain*/DriveTrain driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driverJoystick = driveController;
     this.m_driveTrain = driveTrain;
@@ -38,7 +40,8 @@ public class ArcadeDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveTrain.arcadeDrive(getSpeed(), getRotation(), true);
+    // m_driveTrain.arcadeDrive(getSpeed(), getRotation(), true);
+    m_driveTrain.arcadeDrive(getSpeed(), getRotation(), Constants.kDriveDeadband);
   }
 
   private double getSpeed() {

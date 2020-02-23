@@ -15,9 +15,9 @@ public class RunKicker extends CommandBase {
   /**
    * Creates a new RunKicker.
    */
-  public RunKicker(double speed) {
-    m_spindexer = new Spindexer();
-    m_spindexer.kickerSpeed = speed;
+  public RunKicker(double speed, Spindexer sd) {
+    m_spindexer = sd;
+    m_spindexer.kickerSpeed = -speed;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }

@@ -15,8 +15,8 @@ public class RunIntake extends CommandBase {
   /**
    * Creates a new RunIntake.
    */
-  public RunIntake(double speed) {
-    m_intake = new Intake();
+  public RunIntake(double speed, Intake i) {
+    m_intake = i;
     m_intake.intakeSpeed = speed;
 
     // Use addRequirements() here to declare subsystem dependencies.

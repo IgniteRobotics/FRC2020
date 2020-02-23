@@ -15,8 +15,8 @@ public class RunSorter extends CommandBase {
   /**
    * Creates a new RunSorter.
    */
-  public RunSorter(double speed) {
-    m_sorter = new Sorter();
+  public RunSorter(double speed, Sorter s) {
+    m_sorter = s;
     m_sorter.sorterSpeed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_sorter);

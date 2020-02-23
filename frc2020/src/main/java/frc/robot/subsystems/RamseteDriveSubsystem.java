@@ -59,7 +59,7 @@ public class RamseteDriveSubsystem extends SubsystemBase {
 
   private final ShuffleboardLayout dashboard = Dashboard.subsystemsTab.getLayout("Drivetrain", BuiltInLayouts.kList)
       .withSize(2, 4).withPosition(0, 0);
-  private final NetworkTableEntry useEncodersEntry = dashboard.addPersistent("Use encoders", true)
+  private final NetworkTableEntry useEncodersEntry = dashboard.addPersistent("Use encoders", false)
       .withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
 
   private final SlewRateLimiter speedRateLimiter = new SlewRateLimiter(Constants.SPEED_RATE_LIMIT_ARCADE);
