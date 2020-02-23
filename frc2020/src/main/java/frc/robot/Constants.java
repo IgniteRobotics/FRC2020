@@ -39,10 +39,10 @@ public final class Constants {
 	public static final int kKickerMotorPort = 12;
 
 	public static final int kIntakeSolenoidPort = 0;
-	public static final int kIntakeSolenoidPort2 = 1;
-	public static final int kKickerSolenoidPort = 2;
+	public static final int kKickerSolenoidPort = 1;
 
-	public static final int kSorterSensorPort = 0;
+	public static final int kSpindexerHallEffectPort = 0;
+	public static final int kSorterSensorPort = 1;
 
     public static final int BUTTON_A = 1;
 	public static final int BUTTON_B = 2;

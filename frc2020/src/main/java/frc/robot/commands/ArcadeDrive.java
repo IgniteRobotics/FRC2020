@@ -18,6 +18,7 @@ public class ArcadeDrive extends CommandBase {
   private final Joystick driverJoystick;
 
   private boolean isSlowMode = false;
+  private boolean isReversed = false;
 
   /**
    * Creates a new ArcadeDrive.
@@ -45,19 +46,29 @@ public class ArcadeDrive extends CommandBase {
     if(isSlowMode) {
       speed *= Constants.SLOW_MODE_SPEED_MODIFIER;
     }
+    if(isReversed) {
+      speed *= -1;
+    }
     return speed;
   }
 
   private double getRotation() {
-    double rotation = driverJoystick.getRawAxis(Constants.AXIS_RIGHT_STICK_X);
+    double rotation = -driverJoystick.getRawAxis(Constants.AXIS_RIGHT_STICK_X);
     if(isSlowMode) {
       rotation *= Constants.SLOW_MODE_SPEED_MODIFIER;
+    }
+    if(isReversed) {
+      rotation *= -1;
     }
     return rotation;
   }
 
   public void toggleSlowMode() {
-    isSlowMode = !isSlowMode;
+    isSlowMode = !(isSlowMode);
+  }
+
+  public void toggleReverseMode() {
+    isReversed = !(isReversed);
   }
 
   // Called once the command ends or is interrupted.

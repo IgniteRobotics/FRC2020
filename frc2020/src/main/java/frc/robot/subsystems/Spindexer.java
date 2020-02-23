@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,6 +22,7 @@ public class Spindexer extends SubsystemBase {
   private final WPI_TalonSRX spindexerMotor;
   private final WPI_VictorSPX kickerMotor;
   private final Solenoid kickerSolenoid;
+  private final DigitalInput spindexerHallEffectSensor;
 
   private boolean isExtended;
 
@@ -44,6 +46,8 @@ public class Spindexer extends SubsystemBase {
     isExtended = false;
 
     kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
+
+    spindexerHallEffectSensor = new DigitalInput(Constants.kSpindexerHallEffectPort);
   }
 
   public void spinClockwise() {
@@ -87,6 +91,10 @@ public class Spindexer extends SubsystemBase {
 
   public void stopKicker() {
     kickerMotor.set(ControlMode.PercentOutput, 0.0);
+  }
+
+  public boolean getSpindexerHallEffect() {
+    return spindexerHallEffectSensor.get();
   }
 
   @Override

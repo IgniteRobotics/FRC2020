@@ -52,7 +52,7 @@ public class RobotContainer {
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
-  private  TurnToYaw visionDriveCommand = new TurnToYaw(m_driveTrain);
+  private TurnToYaw visionDriveCommand = new TurnToYaw(m_driveTrain);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -93,6 +93,7 @@ public class RobotContainer {
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenPressed(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
     new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visionDriveCommand);
+    new JoystickButton(m_driveController, Constants.BUTTON_RIGHT_BUMPER).whenPressed(teleDriveCommand::toggleReverseMode);
     new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new RunIntake(intakeSpeed.getDouble(0.0)));
     new JoystickButton(m_manipController, Constants.BUTTON_B).whileHeld(new RunSorter(sorterSpeed.getDouble(0.0)));
     new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new SpinSpindexer(spindexerDirection.getBoolean(false), spindexerSpeed.getDouble(0.0)));
