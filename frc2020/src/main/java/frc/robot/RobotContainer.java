@@ -32,6 +32,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunKicker;
 import frc.robot.commands.RunSorter;
+import frc.robot.commands.Shooterspin;
 import frc.robot.commands.SpinSpindexer;
 import frc.robot.commands.TurnToYaw;
 import frc.robot.subsystems.DriveTrain;
@@ -40,6 +41,8 @@ import frc.robot.subsystems.RamseteDriveSubsystem;
 import frc.robot.subsystems.Sorter;
 import frc.robot.subsystems.Spindexer;
 import frc.robot.util.Dashboard;
+import frc.robot.subsystems.Shooter;
+import frc.robot.commands.Shooterspin;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -55,9 +58,11 @@ public class RobotContainer {
   private Intake m_intake = new Intake();
   private Sorter m_sorter = new Sorter();
   private Spindexer m_spindexer = new Spindexer();
+  private Shooter m_shooter = new Shooter();
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
+  private Shooterspin shooterspin = new Shooterspin(m_shooter);
   // private TurnToYaw visionDriveCommand = new TurnToYaw(m_driveTrain);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -101,9 +106,10 @@ public class RobotContainer {
     // new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visionDriveCommand);
     new JoystickButton(m_driveController, Constants.BUTTON_RIGHT_BUMPER).whenPressed(teleDriveCommand::toggleReverseMode);
     new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new RunIntake(0.5, m_intake));
-    new JoystickButton(m_manipController, Constants.BUTTON_B).whileHeld(new RunKicker(0.5, m_spindexer));
+    new JoystickButton(m_manipController, Constants.BUTTON_B).whenPressed(new RunKicker(0.5, m_spindexer));
     new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new SpinSpindexer(false, 0.5, m_spindexer));
     new JoystickButton(m_manipController, Constants.BUTTON_Y).whileHeld(new RunSorter(0.5, m_sorter));
+    new JoystickButton(m_manipController, Constants.BUTTON_RIGHT_BUMPER).whileHeld(new Shooterspin(m_shooter));
   }
   private void configureSubsystemCommands() {
     m_driveTrain.setDefaultCommand(teleDriveCommand);

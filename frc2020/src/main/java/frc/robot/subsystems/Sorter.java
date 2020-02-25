@@ -37,7 +37,7 @@ public class Sorter extends SubsystemBase {
   }
 
   public void stop() {
-    sorterMotor.set(ControlMode.PercentOutput, sorterSpeed);
+    sorterMotor.set(ControlMode.PercentOutput, 0);
   }
 
   public boolean getSensor() {

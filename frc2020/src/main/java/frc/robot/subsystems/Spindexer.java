@@ -52,6 +52,8 @@ public class Spindexer extends SubsystemBase {
 
   public void spinClockwise() {
     spindexerMotor.set(ControlMode.PercentOutput, spindexerSpeed);
+    
+    System.out.println(spindexerMotor.getSelectedSensorPosition());
   }
 
   public void spinCounterClockwise() {

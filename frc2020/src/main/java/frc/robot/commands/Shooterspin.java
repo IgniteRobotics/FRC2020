@@ -8,38 +8,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Spindexer;
+import frc.robot.subsystems.Shooter;
 
-public class RunKicker extends CommandBase {
-  private final Spindexer m_spindexer;
+public class Shooterspin extends CommandBase {
   /**
-   * Creates a new RunKicker.
+   * Creates a new shooterspin.
    */
-  public RunKicker(double speed, Spindexer sd) {
-    m_spindexer = sd;
-    m_spindexer.kickerSpeed = -speed;
-
+  private final Shooter shooter;
+  public Shooterspin(Shooter shooter) {
+    this.shooter = shooter;
+    addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //m_spindexer.toggleKicker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_spindexer.toggleKicker();
-
+    shooter.shoot();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //m_spindexer.stopKicker();
-    //m_spindexer.toggleKicker();
+    shooter.end();
   }
 
   // Returns true when the command should end.
