@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.FireControl;
 
 public class Velocityshoot extends CommandBase {
 
   private final Shooter m_shooter;
+  private FireControl m_fireControl;
   /**
    * Creates a new Velocityshoot.
    */
@@ -22,6 +24,7 @@ public class Velocityshoot extends CommandBase {
     
     addRequirements(_shooter);
     this.m_shooter = _shooter;
+    this.m_fireControl = FireControl.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -46,6 +49,13 @@ public class Velocityshoot extends CommandBase {
     m_shooter.configuration(kSlotIdx, PIDLoopIdx, kTimeoutMs, kP, kI, kD, kF);
     m_shooter.setVelocity(Velocity);
     SmartDashboard.putNumber("velocity1", m_shooter.getvelocity());
+    //TODO this value should be configurable.
+    int rpmThreshold = 150;
+    if (Math.abs(Velocity - m_shooter.getvelocity()) <= rpmThreshold){
+      m_fireControl.setShooterVelocityStatus(true);
+    } else {
+      m_fireControl.setShooterVelocityStatus(false);
+    }
   }
 
   // Called once the command ends or is interrupted.

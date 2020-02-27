@@ -12,6 +12,7 @@ import frc.robot.subsystems.RamseteDriveSubsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.util.FireControl;
 import frc.robot.util.VisionUtils;
 
 
@@ -29,6 +30,7 @@ public class TargetPositioning extends CommandBase {
   
   
   private final RamseteDriveSubsystem m_driveTrain;
+  private FireControl m_fireControl;
   /**
    * Creates a new TargetRange.
    */
@@ -37,12 +39,14 @@ public class TargetPositioning extends CommandBase {
     this.m_driveTrain = driveTrain;
     this.targetDistance = targetDistance;
     // Use addRequirements() here to declare subsystem dependencies.
+    m_fireControl = FireControl.getInstance();
   }
 
   // Called wen the command is initially scheduled.
   @Override
   public void initialize() {
     table.getEntry("camMode").setNumber(0);
+    this.m_fireControl.setOnTarget(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -92,21 +96,34 @@ public class TargetPositioning extends CommandBase {
     m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,false);
     System.out.println("driving assist"+drivingAdjust);
     SmartDashboard.putNumber("driving assist", drivingAdjust);
+
+    //TODO:  this needs cleaned up.
+    boolean distanceOK =  Math.abs(VisionUtils.getDistanceToTarget(ty)) <= marginOfErrorDist;
+    boolean yawOK = Math.abs(tx) <= marginOfErrorTurn;
+    if (distanceOK && yawOK){
+      m_fireControl.setOnTarget(true);
+    } else {
+      m_fireControl.setOnTarget(false);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     table.getEntry("camMode").setNumber(1);
+    m_fireControl.setOnTarget(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double ty = (double) table.getEntry("ty").getNumber(0);
-    double tx = (double) table.getEntry("tx").getNumber(0);
-    boolean distanceOK =  Math.abs(VisionUtils.getDistanceToTarget(ty)) <= marginOfErrorDist;
-    boolean yawOK = Math.abs(tx) <= marginOfErrorTurn;
-    return(distanceOK && yawOK);
+    // double ty = (double) table.getEntry("ty").getNumber(0);
+    // double tx = (double) table.getEntry("tx").getNumber(0);
+    // boolean distanceOK =  Math.abs(VisionUtils.getDistanceToTarget(ty)) <= marginOfErrorDist;
+    // boolean yawOK = Math.abs(tx) <= marginOfErrorTurn;
+    // return(distanceOK && yawOK);
+    
+    // We now always return false and let the firecontrol coordinate shooting so that it reacquires targets.
+    return false;
   }
 }

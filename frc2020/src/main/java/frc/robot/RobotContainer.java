@@ -58,6 +58,12 @@ public class RobotContainer {
   private Velocityshoot Velocityshoot = new Velocityshoot(m_shooter);
   private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64);
   //private CommandGroupBase _shootcmdgrp = new SequentialCommandGroup(new ParallelCommandGroup(new TargetPositioning(m_driveTrain, 64), new Velocityshoot(m_shooter)), new ParallelCommandGroup(new Kick(m_spindexer),new spindex(m_spindexer)));//this runs the targeting and speeding up in parrelel and then runs the kicker and spindexer in parelell and then pulls up the kicker when done
+  private CommandGroupBase fireControlGroup = new ParallelCommandGroup(
+                                                                        new TargetPositioning(m_driveTrain, 64), 
+                                                                        new Velocityshoot(m_shooter), 
+                                                                        new kick(m_spindexer),
+                                                                        new spindex(m_spindexer)
+                                                                        );
   private kick kick = new kick(m_spindexer);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -96,6 +102,8 @@ public class RobotContainer {
     new JoystickButton(m_manipController, Constants.BUTTON_A).whenHeld(Velocityshoot); 
     new JoystickButton(m_driveController, Constants.BUTTON_B).whenHeld(targetPositioning);
 
+    //fire control group. _fireControlGroup
+    new JoystickButton(m_manipController, Constants.AXIS_RIGHT_TRIGGER).whenHeld(fireControlGroup); 
   }
   private void configureSubsystemCommands() {
     m_driveTrain.setDefaultCommand(teleDriveCommand);

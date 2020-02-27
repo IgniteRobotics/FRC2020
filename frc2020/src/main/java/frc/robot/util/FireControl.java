@@ -1,14 +1,7 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.util;
 
 /**
- * Add your docs here.
+ * A simple state machine using a singleton pattern to help control the shooter.
  */
 public class FireControl {
 
@@ -18,6 +11,8 @@ public class FireControl {
     //instance variables
     private long onTargetTimer = 0;    
     private int powerCells = 0;
+    private boolean shooterVelocityOK = false;
+    private boolean kickerVelocityOK = false;
 
     // these should be moved ton Constants, or set from elsewhere
     private static final long onTargetThresholdMillis = 100;
@@ -47,7 +42,7 @@ public class FireControl {
     }
 
     public boolean isOnTarget(){
-        if (System.currentTimeMillis() - onTargetTimer >= onTargetThresholdMillis){
+        if (this.onTargetTimer > 0 && System.currentTimeMillis() - onTargetTimer >= onTargetThresholdMillis){
             return true;
         } else {
             return false;
@@ -67,8 +62,20 @@ public class FireControl {
         if (powerCells < 0) {powerCells = 0;}
     }
 
+    public void setShooterVelocityStatus(boolean status){
+        this.shooterVelocityOK = status;
+    }
+
+    public void setKickerVelocityStatus(boolean status){
+        this.kickerVelocityOK = status;
+    }
+
     public boolean readyToFire(){
-        return (isOnTarget() && this.powerCells > 0);
+        // TODO count power cells when we have sensors.
+        return (isOnTarget() 
+                && this.kickerVelocityOK
+                && this.shooterVelocityOK
+        );
     }
 
     public boolean readyToInake(){

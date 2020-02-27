@@ -9,8 +9,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Spindexer;
+import frc.robot.util.FireControl;
 public class spindex extends CommandBase {
   private static Spindexer m_spindexer;
+  private FireControl m_fireControl;
   /**
    * Creates a new kick.
    */
@@ -18,6 +20,7 @@ public class spindex extends CommandBase {
     addRequirements(spindexer);
     this.m_spindexer = spindexer;
     // Use addRequirements() here to declare subsystem dependencies.
+    this.m_fireControl = FireControl.getInstance();
   }
 
   // Called when the command is initially scheduled.
@@ -28,8 +31,11 @@ public class spindex extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_spindexer.spinClockwise();
-    
+    //Only spin if we're ready to fire
+    //TODO:  this breaks intake.  it's just an example for the shooter
+    if (m_fireControl.readyToFire()){
+      m_spindexer.spinClockwise();
+    } 
   }
 
   // Called once the command ends or is interrupted.
