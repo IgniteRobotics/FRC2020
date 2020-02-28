@@ -32,7 +32,7 @@ public class SpinNKick extends CommandBase {
   @Override
   public void execute() {
     m_spindexer.spinCounterClockwise();
-    m_spindexer.spinKickerWheel();
+    m_spindexer.spinKickerWheel(0.5);
   }
 
   // Called once the command ends or is interrupted.

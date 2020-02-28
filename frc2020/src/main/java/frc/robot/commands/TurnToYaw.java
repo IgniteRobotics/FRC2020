@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -19,12 +20,13 @@ public class TurnToYaw extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("vision");
   boolean finished = false;
-  private final RamseteDriveSubsystem m_driveTrain;
+  // private final RamseteDriveSubsystem m_driveTrain;
+  private final DriveTrain m_driveTrain;
   private final Joystick driverJoystick;
   /**
    * Creates a new TurnToYaw.
    */
-  public TurnToYaw(RamseteDriveSubsystem driveTrain,Joystick driveController) {
+  public TurnToYaw(DriveTrain driveTrain,Joystick driveController) {
     addRequirements(driveTrain);
     this.driverJoystick = driveController;
     this.m_driveTrain = driveTrain;
@@ -73,7 +75,7 @@ public class TurnToYaw extends CommandBase {
       finished = true;
     }*/
     steering_adjust = PDI(iError, dError, heading_error, 0, dError, Kp, Kd, Ki);
-    m_driveTrain.arcadeDrive(speed,steering_adjust, false);
+    m_driveTrain.arcadeDrive(speed,steering_adjust, Constants.kDriveDeadband);
     System.out.println(tx);
   }
   public double PDI(double iError,double dError, double error,double previous_error ,double derivative, double P, double D, double I){
@@ -84,6 +86,7 @@ public class TurnToYaw extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_driveTrain.stop();
   }
 
   // Returns true when the command should end.

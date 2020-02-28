@@ -27,7 +27,6 @@ public class Spindexer extends SubsystemBase {
   private boolean isExtended;
 
   public double spindexerSpeed = 0.5;
-  public double kickerSpeed = -0.5;
 
   /**
    * Creates a new Spindexer.
@@ -45,14 +44,6 @@ public class Spindexer extends SubsystemBase {
     spindexerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     spindexerMotor.setNeutralMode(NeutralMode.Brake);
     spindexerMotor.setSensorPhase(true);
-
-    kickerMotor = new WPI_VictorSPX(Constants.kKickerMotorPort);
-    kickerMotor.setInverted(false);
-    kickerMotor.setNeutralMode(NeutralMode.Brake);
-
-    isExtended = false;
-
-    kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
   }
 
   public void spinClockwise() {
@@ -69,15 +60,6 @@ public class Spindexer extends SubsystemBase {
 
   public double getEncoderPosition() {
     return spindexerMotor.getSelectedSensorPosition();
-  }
-  private void extendKicker() {
-    isExtended = true;
-    kickerSolenoid.set(true);
-  }
-
-  private void retractKicker() {
-    isExtended = false;
-    kickerSolenoid.set(false);
   }
 
   public void stop() {
@@ -102,8 +84,8 @@ public class Spindexer extends SubsystemBase {
     }
   }
 
-  public void spinKickerWheel() {
-    kickerMotor.set(ControlMode.PercentOutput, kickerSpeed);
+  public void spinKickerWheel(double speed) {
+    kickerMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void stopKicker() {

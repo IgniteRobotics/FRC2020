@@ -12,12 +12,13 @@ import frc.robot.subsystems.Spindexer;
 
 public class RunKicker extends CommandBase {
   private final Spindexer m_spindexer;
+  private double m_speed;
   /**
    * Creates a new RunKicker.
    */
   public RunKicker(double speed, Spindexer sd) {
     m_spindexer = sd;
-    m_spindexer.kickerSpeed = -speed;
+    m_speed = speed;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -25,20 +26,20 @@ public class RunKicker extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_spindexer.toggleKicker();
+    // m_spindexer.toggleKicker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_spindexer.spinKickerWheel();
+    m_spindexer.spinKickerWheel(-m_speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_spindexer.stopKicker();
-    m_spindexer.toggleKicker();
+    // m_spindexer.toggleKicker();
   }
 
   // Returns true when the command should end.

@@ -8,6 +8,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,8 +20,8 @@ import frc.robot.util.VisionUtils;
 public class TargetPositioning extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("limelight");
-  private static double KpTurn = 0.02;
-  private static double KpDistance = 0.0125;
+  private static double KpTurn = 0.08;
+  private static double KpDistance = 0.08;
   private static double min_command = 0.05;
   // the range you want.
   private double targetDistance;
@@ -28,11 +30,12 @@ public class TargetPositioning extends CommandBase {
   private double marginOfErrorTurn = 2.0;
   
   
-  private final RamseteDriveSubsystem m_driveTrain;
+  // private final RamseteDriveSubsystem m_driveTrain;
+  private final DriveTrain m_driveTrain;
   /**
    * Creates a new TargetRange.
    */
-  public TargetPositioning(RamseteDriveSubsystem driveTrain, double targetDistance) {
+  public TargetPositioning(DriveTrain driveTrain, double targetDistance) {
     addRequirements(driveTrain);
     this.m_driveTrain = driveTrain;
     this.targetDistance = targetDistance;
@@ -89,7 +92,7 @@ public class TargetPositioning extends CommandBase {
     }
 
 
-    m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,false);
+    m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,Constants.kDriveDeadband);
     System.out.println("driving assist"+drivingAdjust);
     SmartDashboard.putNumber("driving assist", drivingAdjust);
   }
