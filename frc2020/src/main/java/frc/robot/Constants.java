@@ -31,18 +31,20 @@ public final class Constants {
 
 	public static final double kDriveDeadband = 0.03;
 	
-	public static final int kIntakeMotorPort = 7; //TODO find out what these actually are.
-	public static final int kSorterMotorPort = 8;
-	public static final int kSpindexerMotorPort = 9;
-	public static final int kShooterTalonMotorPort = 10;
-	public static final int kShooterVictorMotorPort = 11;
-	public static final int kKickerMotorPort = 12;
+	public static final int kIntakeMotorPort = 10; //TODO find out what these actually are.
+	public static final int kSorterMotorPort = 11;
+	public static final int kSpindexerMotorPort = 14;
+	public static final int kShooterTalonMotorPort = 13;
+	public static final int kShooterVictorMotorPort = 8;
+	public static final int kKickerMotorPort = 9;
+	public static final int kClimberMotorPort = 7;
+	public static final int kTurretMotorPort = 12;
 
 	public static final int kIntakeSolenoidPort = 0;
-	public static final int kIntakeSolenoidPort2 = 1;
-	public static final int kKickerSolenoidPort = 2;
+	public static final int kKickerSolenoidPort = 1;
 
-	public static final int kIntakeSensorPort = 0;
+	public static final int kSpindexerHallEffectPort = 0;
+	public static final int kSorterSensorPort = 1;
 
     public static final int BUTTON_A = 1;
 	public static final int BUTTON_B = 2;
@@ -94,6 +96,8 @@ public final class Constants {
 	public static final double kEncoderDistancePerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR;
 
 	public static final boolean kGyroReversed = false;
+
+	public static final double OPEN_LOOP_RAMP = 0.25;
 
 	public static final SimpleMotorFeedforward FEED_FORWARD = new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 }

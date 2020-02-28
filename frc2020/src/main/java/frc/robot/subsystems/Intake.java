@@ -11,17 +11,17 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   private final WPI_VictorSPX intakeMotor;
-  private final DoubleSolenoid intakePistonSolenoid;
-  private final DigitalInput intakeSensor;
+  private final Solenoid intakePistonSolenoid;
 
   private boolean isExtended;
+
+  public double intakeSpeed = 0.5;
 
   /**
    * Creates a new Intake.
@@ -33,19 +33,17 @@ public class Intake extends SubsystemBase {
 
     isExtended = false;
 
-    intakePistonSolenoid = new DoubleSolenoid(Constants.kIntakeSolenoidPort, Constants.kIntakeSolenoidPort2);
-
-    intakeSensor = new DigitalInput(Constants.kIntakeSensorPort);
+    intakePistonSolenoid = new Solenoid(Constants.kIntakeSolenoidPort);
   }
 
   private void extendIntake() {
     isExtended = true;
-    intakePistonSolenoid.set(DoubleSolenoid.Value.kReverse);
+    intakePistonSolenoid.set(true);
   }
 
   private void retractIntake() {
     isExtended = false;
-    intakePistonSolenoid.set(DoubleSolenoid.Value.kForward);
+    intakePistonSolenoid.set(false);
   }
 
   public void toggleIntake() {
@@ -58,7 +56,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void spinInwards() {
-    intakeMotor.set(ControlMode.PercentOutput, 0.5);
+    intakeMotor.set(ControlMode.PercentOutput, intakeSpeed);
   }
 
   public void stop() {
@@ -66,11 +64,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void spinOutwards() {
-    intakeMotor.set(ControlMode.PercentOutput, -0.5);
-  }
-
-  public boolean getIntakeSensor() {
-    return intakeSensor.get();
+    intakeMotor.set(ControlMode.PercentOutput, -intakeSpeed);
   }
 
   @Override

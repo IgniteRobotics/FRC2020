@@ -11,11 +11,15 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Sorter extends SubsystemBase {
   private final WPI_VictorSPX sorterMotor;
+  private final DigitalInput sorterBeamBreak;
+
+  public double sorterSpeed = 0.5;
 
   /**
    * Creates a new Sorter.
@@ -24,10 +28,20 @@ public class Sorter extends SubsystemBase {
     sorterMotor = new WPI_VictorSPX(Constants.kSorterMotorPort);
     sorterMotor.setInverted(false);
     sorterMotor.setNeutralMode(NeutralMode.Brake);
+
+    sorterBeamBreak = new DigitalInput(Constants.kSorterSensorPort);
   }
 
   public void inSorter() {
-    sorterMotor.set(ControlMode.PercentOutput, 0.5);
+    sorterMotor.set(ControlMode.PercentOutput, sorterSpeed);
+  }
+
+  public void stop() {
+    sorterMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  public boolean getSensor() {
+    return sorterBeamBreak.get();
   }
 
   @Override
