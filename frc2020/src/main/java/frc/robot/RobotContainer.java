@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.Spindexer;
 import frc.robot.util.Dashboard;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Shooterspin;
+import frc.robot.commands.TargetPositioning;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -67,8 +69,8 @@ public class RobotContainer {
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
   private Shooterspin shooterspin = new Shooterspin(m_shooter);
-  // private TurnToYaw visionDriveCommand = new TurnToYaw(m_driveTrain);
-
+  private TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain, m_driveController);
+  private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // private NetworkTableEntry intakeSpeed = Dashboard.devTab.add("Intake Speed", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();

@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -32,6 +33,13 @@ public class Spindexer extends SubsystemBase {
    * Creates a new Spindexer.
    */
   public Spindexer() {
+    kickerMotor = new WPI_VictorSPX(Constants.kKickerMotorPort);
+    kickerMotor.setInverted(false);
+    kickerMotor.setNeutralMode(NeutralMode.Brake);
+
+    isExtended = false;
+
+    kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
     spindexerMotor = new WPI_TalonSRX(Constants.kSpindexerMotorPort);
     spindexerMotor.setInverted(false);
     spindexerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -51,12 +59,25 @@ public class Spindexer extends SubsystemBase {
     spindexerMotor.set(ControlMode.PercentOutput, spindexerSpeed);
   }
 
+  public void spinstop(){
+    spindexerMotor.set(ControlMode.PercentOutput, 0);
+  }
+
   public void spinCounterClockwise() {
     spindexerMotor.set(ControlMode.PercentOutput, -spindexerSpeed);
   }
 
   public double getEncoderPosition() {
     return spindexerMotor.getSelectedSensorPosition();
+  }
+  private void extendKicker() {
+    isExtended = true;
+    kickerSolenoid.set(true);
+  }
+
+  private void retractKicker() {
+    isExtended = false;
+    kickerSolenoid.set(false);
   }
 
   public void stop() {
@@ -72,7 +93,6 @@ public class Spindexer extends SubsystemBase {
     isExtended = false;
     kickerSolenoid.set(false);
   }
-
   public void toggleKicker() {
     if(isExtended) {
       retractKicker();
