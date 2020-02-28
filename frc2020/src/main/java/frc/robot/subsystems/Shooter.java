@@ -29,8 +29,6 @@ public class Shooter extends SubsystemBase {
   public void shoot(){
     shooterTalon.set(ControlMode.PercentOutput, .5);// dummy command
     shooterVictor.set(ControlMode.PercentOutput, .5);
-    
-    System.out.println(shooterTalon.getSelectedSensorPosition());
   }
 
   public void end(){

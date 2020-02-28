@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -17,7 +18,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -57,62 +61,87 @@ public class RamseteDriveSubsystem extends SubsystemBase {
 
   private Pose2d savedPose;
 
-  private final ShuffleboardLayout dashboard = Dashboard.subsystemsTab.getLayout("Drivetrain", BuiltInLayouts.kList)
-      .withSize(2, 4).withPosition(0, 0);
-  private final NetworkTableEntry useEncodersEntry = dashboard.addPersistent("Use encoders", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+  private boolean useEncoders;
+  private boolean encodersAvailable;
 
   private final SlewRateLimiter speedRateLimiter = new SlewRateLimiter(Constants.SPEED_RATE_LIMIT_ARCADE);
   private final SlewRateLimiter rotationRateLimiter = new SlewRateLimiter(Constants.ROTATION_RATE_LIMIT_ARCADE);
 
   public RamseteDriveSubsystem() {
-
-    dashboard.add(this);
-
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     resetEncoders();
     navX.zeroYaw();
 
-    dashboard.add(leftMaster);
-    dashboard.add(rightMaster);
-    dashboard.addString("Pose", () -> m_odometry.getPoseMeters().toString());
-
-    final TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
+    TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
     talonConfig.slot0.kP = Constants.kPDriveVel;
     talonConfig.slot0.kI = 0.0;
     talonConfig.slot0.kD = 0.0;
     talonConfig.slot0.integralZone = 400;
     talonConfig.slot0.closedLoopPeakOutput = 1.0;
+    talonConfig.openloopRamp = Constants.OPEN_LOOP_RAMP;
 
     leftMaster.configAllSettings(talonConfig);
+    leftMaster.enableVoltageCompensation(true);
+    leftFollower.configFactoryDefault();
+    leftFollower2.configFactoryDefault();
+
     rightMaster.configAllSettings(talonConfig);
+    rightMaster.enableVoltageCompensation(true);
+    rightFollower.configFactoryDefault();
+    rightFollower2.configFactoryDefault();
 
-    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-
-    leftMaster.setInverted(true);
-    leftFollower.setInverted(InvertType.FollowMaster);
-    leftFollower2.setInverted(InvertType.FollowMaster);
-
-    rightMaster.setInverted(false);
-    rightFollower.setInverted(InvertType.FollowMaster);
-    rightFollower2.setInverted(InvertType.FollowMaster);
-
-    leftMaster.setSensorPhase(false);
-    rightMaster.setSensorPhase(false);
-
-    leftMaster.overrideLimitSwitchesEnable(false);
-    rightMaster.overrideLimitSwitchesEnable(false);
-
-    leftFollower.follow(leftMaster);
-    rightFollower.follow(rightMaster);
-    leftFollower2.follow(leftMaster);
-    rightFollower2.follow(rightMaster);
+    enableEncoders();
 
     setNeutralMode(NeutralMode.Brake);
 
-    m_driveTrain.setRightSideInverted(false);
+    rightMaster.setSensorPhase(false);
+    rightMaster.setInverted(true);
+    rightFollower.setInverted(true);
+    rightFollower2.setInverted(true);
+
+    leftMaster.setSensorPhase(false);
+    leftMaster.setInverted(false);
+    leftFollower.setInverted(false);
+    leftFollower2.setInverted(false);
+
+    rightMaster.overrideLimitSwitchesEnable(false);
+    leftMaster.overrideLimitSwitchesEnable(false);
+
+    leftFollower.follow(leftMaster);
+    leftFollower2.follow(leftMaster);
+    rightFollower.follow(rightMaster);
+    rightFollower2.follow(rightMaster);
+  }
+
+  public void addDashboardWidgets(ShuffleboardLayout dashboard) {
+    dashboard.addString("Pose", () -> m_odometry.getPoseMeters().toString());
+
+    var useEncodersEntry = dashboard.addPersistent("Use Encoders", useEncoders)
+        .withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+    useEncodersEntry.addListener(this::handleEncoderEntry, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+  }
+
+  private void handleEncoderEntry(EntryNotification notification) {
+    var entry = notification.getEntry();
+    if(entry.getBoolean(true) && (!encodersAvailable || !useEncoders)) {
+      useEncoders = true;
+      enableEncoders();
+    }
+    else if(!entry.getBoolean(true)) {
+      useEncoders = false;
+    }
+    entry.setBoolean(useEncoders);
+  }
+
+  private void enableEncoders() {
+    encodersAvailable = 
+      leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10) == ErrorCode.OK &
+      rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10) == ErrorCode.OK;
+    if(!encodersAvailable) {
+      DriverStation.reportError("Failed to configure drivetrain encoders!", false);
+      useEncoders = false;
+    }
   }
 
   @Override
@@ -146,32 +175,34 @@ public class RamseteDriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive(final double speed, final double rotation, final boolean useSquares) {
-    if (useEncodersEntry.getBoolean(true)) {
-      double xSpeed = speedRateLimiter.calculate(safeClamp(speed));
-      double zRotation = -rotationRateLimiter.calculate(safeClamp(rotation));
+      var xSpeed = speedRateLimiter.calculate(safeClamp(speed));
+      var zRotation = -rotationRateLimiter.calculate(safeClamp(rotation));
       if (useSquares) {
         xSpeed *= Math.abs(xSpeed);
         zRotation *= Math.abs(zRotation);
       }
       xSpeed *= Constants.kMaxSpeedMetersPerSecond;
       zRotation *= Constants.kMaxAngularVelocity;
-      final var wheelSpeeds = Constants.kDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, zRotation));
-      tankDriveVelocity(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
-    } else {
+      var wheelSpeeds = Constants.kDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, zRotation));
+      if(useEncoders) {
+        tankDriveVelocity(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+      }
+      else {
       m_driveTrain.arcadeDrive(speed, rotation, useSquares);
     }
   }
 
   public void tankDrive(final double leftSpeed, final double rightSpeed, final boolean useSquares) {
-    if (useEncodersEntry.getBoolean(true)) {
       var xLeftSpeed = safeClamp(leftSpeed) * Constants.kMaxSpeedMetersPerSecond;
       var xRightSpeed = safeClamp(rightSpeed) * Constants.kMaxSpeedMetersPerSecond;
       if (useSquares) {
         xLeftSpeed *= Math.abs(xLeftSpeed);
         xRightSpeed *= Math.abs(xRightSpeed);
       }
-      tankDriveVelocity(xLeftSpeed, xRightSpeed);
-    } else {
+      if(useEncoders){
+        tankDriveVelocity(xLeftSpeed, xRightSpeed);
+      }
+      else {
       m_driveTrain.tankDrive(leftSpeed, rightSpeed, useSquares);
     }
   }

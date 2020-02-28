@@ -97,5 +97,7 @@ public final class Constants {
 
 	public static final boolean kGyroReversed = false;
 
+	public static final double OPEN_LOOP_RAMP = 0.25;
+
 	public static final SimpleMotorFeedforward FEED_FORWARD = new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 }

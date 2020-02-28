@@ -13,8 +13,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,12 +22,11 @@ public class Spindexer extends SubsystemBase {
   private final WPI_TalonSRX spindexerMotor;
   private final WPI_VictorSPX kickerMotor;
   private final Solenoid kickerSolenoid;
-  // private final DigitalInput spindexerHallEffectSensor;
 
   private boolean isExtended;
 
   public double spindexerSpeed = 0.5;
-  public double kickerSpeed = 0.5;
+  public double kickerSpeed = -0.5;
 
   /**
    * Creates a new Spindexer.
@@ -46,14 +45,10 @@ public class Spindexer extends SubsystemBase {
     isExtended = false;
 
     kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
-
-    // spindexerHallEffectSensor = new DigitalInput(Constants.kSpindexerHallEffectPort);
   }
 
   public void spinClockwise() {
     spindexerMotor.set(ControlMode.PercentOutput, spindexerSpeed);
-    
-    System.out.println(spindexerMotor.getSelectedSensorPosition());
   }
 
   public void spinCounterClockwise() {
@@ -95,12 +90,13 @@ public class Spindexer extends SubsystemBase {
     kickerMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
-  // public boolean getSpindexerHallEffect() {
-  //   return spindexerHallEffectSensor.get();
-  // }
+  public void resetEncoder() {
+    spindexerMotor.setSelectedSensorPosition(0);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Spindexer Encoder Pos", getEncoderPosition());
   }
 }

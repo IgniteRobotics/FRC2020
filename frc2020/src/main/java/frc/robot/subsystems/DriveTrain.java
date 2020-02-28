@@ -104,8 +104,6 @@ public class DriveTrain extends SubsystemBase {
 
     setOpenLoopLeft(limit(leftMotorOutput));
     setOpenLoopRight(limit(rightMotorOutput));
-    
-    System.out.println(leftMaster.getSelectedSensorPosition());
   }
 
   public void setOpenLoopLeft(double power) {

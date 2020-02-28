@@ -27,12 +27,16 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunKicker;
 import frc.robot.commands.RunSorter;
 import frc.robot.commands.Shooterspin;
+import frc.robot.commands.SpinNKick;
 import frc.robot.commands.SpinSpindexer;
 import frc.robot.commands.TurnToYaw;
 import frc.robot.subsystems.DriveTrain;
@@ -105,11 +109,17 @@ public class RobotContainer {
     new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
     // new JoystickButton(m_driveController, Constants.BUTTON_A).whenReleased(visionDriveCommand);
     new JoystickButton(m_driveController, Constants.BUTTON_RIGHT_BUMPER).whenPressed(teleDriveCommand::toggleReverseMode);
-    new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new RunIntake(0.5, m_intake));
-    new JoystickButton(m_manipController, Constants.BUTTON_B).whenPressed(new RunKicker(0.5, m_spindexer));
-    new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new SpinSpindexer(false, 0.5, m_spindexer));
-    new JoystickButton(m_manipController, Constants.BUTTON_Y).whileHeld(new RunSorter(0.5, m_sorter));
+
+    new JoystickButton(m_manipController, Constants.BUTTON_LEFT_BUMPER).whileHeld(new RunIntake(0.5, m_intake));
     new JoystickButton(m_manipController, Constants.BUTTON_RIGHT_BUMPER).whileHeld(new Shooterspin(m_shooter));
+    new JoystickButton(m_manipController, Constants.BUTTON_START).whenPressed(m_spindexer::toggleKicker);
+    // new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new ParallelCommandGroup(new RunIntake(0.5, m_intake), new RunKicker(0.5, m_spindexer), new RunSorter(0.5, m_sorter), new SpinSpindexer(true, 0.1, m_spindexer)));
+    // new JoystickButton(m_manipController, Constants.BUTTON_BACK).whenPressed(new SpinSpindexer(false, 0.1, m_spindexer).withInterrupt(() -> !(SmartDashboard.getBoolean("Hall Effect Current State", false))));
+    // new JoystickButton(m_manipController, Constants.BUTTON_B).whenPressed(m_spindexer::resetEncoder);
+    // new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new ParallelCommandGroup(new SpinNKick(m_spindexer), new Shooterspin(m_shooter)));
+    new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new RunCommand(() -> m_spindexer.spinKickerWheel(), m_spindexer));
+    new JoystickButton(m_manipController, Constants.BUTTON_B).whenPressed(new InstantCommand(() -> m_spindexer.toggleKicker(), m_spindexer));
+    new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new Shooterspin(m_shooter));
   }
   private void configureSubsystemCommands() {
     m_driveTrain.setDefaultCommand(teleDriveCommand);

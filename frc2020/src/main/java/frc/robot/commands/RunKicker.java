@@ -25,21 +25,20 @@ public class RunKicker extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //m_spindexer.toggleKicker();
+    m_spindexer.toggleKicker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_spindexer.toggleKicker();
-
+    m_spindexer.spinKickerWheel();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //m_spindexer.stopKicker();
-    //m_spindexer.toggleKicker();
+    m_spindexer.stopKicker();
+    m_spindexer.toggleKicker();
   }
 
   // Returns true when the command should end.
