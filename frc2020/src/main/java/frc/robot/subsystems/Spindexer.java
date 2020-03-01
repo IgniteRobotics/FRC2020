@@ -21,10 +21,6 @@ import frc.robot.Constants;
 
 public class Spindexer extends SubsystemBase {
   private final WPI_TalonSRX spindexerMotor;
-  private final WPI_VictorSPX kickerMotor;
-  private final Solenoid kickerSolenoid;
-
-  private boolean isExtended;
 
   public double spindexerSpeed = 0.5;
 
@@ -32,13 +28,6 @@ public class Spindexer extends SubsystemBase {
    * Creates a new Spindexer.
    */
   public Spindexer() {
-    kickerMotor = new WPI_VictorSPX(Constants.kKickerMotorPort);
-    kickerMotor.setInverted(false);
-    kickerMotor.setNeutralMode(NeutralMode.Brake);
-
-    isExtended = false;
-
-    kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
     spindexerMotor = new WPI_TalonSRX(Constants.kSpindexerMotorPort);
     spindexerMotor.setInverted(false);
     spindexerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -46,16 +35,12 @@ public class Spindexer extends SubsystemBase {
     spindexerMotor.setSensorPhase(true);
   }
 
-  public void spinClockwise() {
-    spindexerMotor.set(ControlMode.PercentOutput, spindexerSpeed);
+  public void spinClockwise(double speed) {
+    spindexerMotor.set(ControlMode.PercentOutput, speed);
   }
 
-  public void spinstop(){
-    spindexerMotor.set(ControlMode.PercentOutput, 0);
-  }
-
-  public void spinCounterClockwise() {
-    spindexerMotor.set(ControlMode.PercentOutput, -spindexerSpeed);
+  public void spinCounterClockwise(double speed) {
+    spindexerMotor.set(ControlMode.PercentOutput, -speed);
   }
 
   public double getEncoderPosition() {
@@ -64,32 +49,6 @@ public class Spindexer extends SubsystemBase {
 
   public void stop() {
     spindexerMotor.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  private void extendKicker() {
-    isExtended = true;
-    kickerSolenoid.set(true);
-  }
-
-  private void retractKicker() {
-    isExtended = false;
-    kickerSolenoid.set(false);
-  }
-  public void toggleKicker() {
-    if(isExtended) {
-      retractKicker();
-    }
-    else {
-      extendKicker();
-    }
-  }
-
-  public void spinKickerWheel(double speed) {
-    kickerMotor.set(ControlMode.PercentOutput, speed);
-  }
-
-  public void stopKicker() {
-    kickerMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   public void resetEncoder() {

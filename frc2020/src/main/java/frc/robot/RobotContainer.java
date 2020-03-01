@@ -33,15 +33,20 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.AutoForward;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunKicker;
 import frc.robot.commands.RunSorter;
 import frc.robot.commands.Shooterspin;
+import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SpinNKick;
 import frc.robot.commands.SpinSpindexer;
 import frc.robot.commands.TurnToYaw;
+import frc.robot.commands.Velocityshoot;
+import frc.robot.commands.Wait;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.RamseteDriveSubsystem;
 import frc.robot.subsystems.Sorter;
 import frc.robot.subsystems.Spindexer;
@@ -65,12 +70,14 @@ public class RobotContainer {
   private Sorter m_sorter = new Sorter();
   private Spindexer m_spindexer = new Spindexer();
   private Shooter m_shooter = new Shooter();
+  private Kicker m_kicker = new Kicker();
   private Joystick m_driveController = new Joystick(Constants.kDriveControllerPort);
   private Joystick m_manipController = new Joystick(Constants.kManipControllerPort);
   private ArcadeDrive teleDriveCommand = new ArcadeDrive(m_driveController, m_driveTrain);
   private Shooterspin shooterspin = new Shooterspin(m_shooter);
   private TurnToYaw visonDriveCommand = new TurnToYaw(m_driveTrain, m_driveController);
-  private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 64);
+  private TargetPositioning targetPositioning = new TargetPositioning(m_driveTrain, 138); //number in inches
+  private AutoForward m_auto = new AutoForward(m_driveTrain, 1000);
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // private NetworkTableEntry intakeSpeed = Dashboard.devTab.add("Intake Speed", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
@@ -107,24 +114,20 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenPressed(teleDriveCommand::toggleSlowMode);
-    new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whenReleased(teleDriveCommand::toggleSlowMode);
-    new JoystickButton(m_driveController, Constants.BUTTON_A).whileHeld(new TargetPositioning(m_driveTrain, 84));
-    new JoystickButton(m_driveController, Constants.BUTTON_RIGHT_BUMPER).whenPressed(teleDriveCommand::toggleReverseMode);
+    // new JoystickButton(m_driveController, Constants.AXIS_RIGHT_TRIGGER).whileHeld(teleDriveCommand::toggleSlowMode);
+    new JoystickButton(m_driveController, Constants.BUTTON_A).whileHeld(new TargetPositioning(m_driveTrain, 138));
+    new JoystickButton(m_driveController, Constants.BUTTON_B).whileHeld(new TargetPositioning(m_driveTrain, 222));
 
     new JoystickButton(m_manipController, Constants.BUTTON_LEFT_BUMPER).whileHeld(new RunIntake(0.5, m_intake));
-    new JoystickButton(m_manipController, Constants.BUTTON_RIGHT_BUMPER).whileHeld(new RunSorter(0.5, m_sorter));
-    // new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new ParallelCommandGroup(new RunIntake(0.5, m_intake), new RunKicker(0.5, m_spindexer), new RunSorter(0.5, m_sorter), new SpinSpindexer(true, 0.1, m_spindexer)));
-    // new JoystickButton(m_manipController, Constants.BUTTON_BACK).whenPressed(new SpinSpindexer(false, 0.1, m_spindexer).withInterrupt(() -> !(SmartDashboard.getBoolean("Hall Effect Current State", false))));
-    // new JoystickButton(m_manipController, Constants.BUTTON_B).whenPressed(m_spindexer::resetEncoder);
-    // new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new ParallelCommandGroup(new SpinNKick(m_spindexer), new Shooterspin(m_shooter)));
-    new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new RunKicker(0.6, m_spindexer));
-    new JoystickButton(m_manipController, Constants.BUTTON_B).whenPressed(new InstantCommand(() -> m_spindexer.toggleKicker(), m_spindexer));
-    new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new Shooterspin(m_shooter));
-    new JoystickButton(m_manipController, Constants.BUTTON_Y).whileHeld(new SpinSpindexer(true, 0.15, m_spindexer));
-    new JoystickButton(m_manipController, Constants.BUTTON_BACK).whenPressed(new InstantCommand(() -> m_intake.toggleIntake(), m_intake));
-    new JoystickButton(m_manipController, Constants.BUTTON_START).whileHeld(new RunKicker(-0.1, m_spindexer));
+    new JoystickButton(m_manipController, Constants.BUTTON_A).whileHeld(new ParallelCommandGroup(new RunSorter(0.5, m_sorter), new RunKicker(-0.1, m_kicker)));
+    new JoystickButton(m_manipController, Constants.BUTTON_X).whileHeld(new SpinSpindexer(true, 0.15, m_spindexer).withInterrupt(() -> SmartDashboard.getBoolean("Hall Effect Currrent State", false)));
+    new JoystickButton(m_manipController, Constants.BUTTON_Y).whenPressed(m_kicker::toggleKicker);
+    //new JoystickButton(m_manipController, Constants.BUTTON_LEFT_STICK).whileHeld(new ParallelCommandGroup(new Shooterspin(m_shooter), new RunKicker(0.7, m_kicker), new SpinIntake(0.3, m_intake))); //17 ft
+    
+    new JoystickButton(m_manipController, Constants.BUTTON_LEFT_STICK).whileHeld(new ParallelCommandGroup(new Velocityshoot(5400, m_shooter), new RunKicker(0.7, m_kicker), new SpinIntake(0.3, m_intake))); //17 ft
+    new JoystickButton(m_manipController, Constants.BUTTON_START).whileHeld(new RunKicker(0.5, m_kicker));
   }
+
   private void configureSubsystemCommands() {
     m_driveTrain.setDefaultCommand(teleDriveCommand);
   }
@@ -135,7 +138,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return m_auto;
   }
 
   protected static Trajectory loadTrajectory(String trajectoryName) throws IOException {

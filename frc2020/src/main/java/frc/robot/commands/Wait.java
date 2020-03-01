@@ -8,39 +8,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
 
-public class RunIntake extends CommandBase {
-  private final Intake m_intake;
-  private double m_speed;
+public class Wait extends CommandBase {
   /**
-   * Creates a new RunIntake.
+   * Creates a new Wait.
    */
-  public RunIntake(double speed, Intake i) {
-    m_intake = i;
-    m_speed = speed;
+  private double timeToWait = 0.0;
+  private double targetTime;
 
+  public Wait(double timeMS) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intake);
+
+    timeToWait = timeMS;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.toggleIntake();
+    targetTime = System.currentTimeMillis() + timeToWait;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.spin(m_speed);
+    if(System.currentTimeMillis() >= targetTime) {
+      this.end(false);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.stop();
-    m_intake.toggleIntake();
+    
   }
 
   // Returns true when the command should end.

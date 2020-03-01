@@ -8,39 +8,46 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.DriveTrain;
 
-public class RunIntake extends CommandBase {
-  private final Intake m_intake;
-  private double m_speed;
+public class AutoForward extends CommandBase {
   /**
-   * Creates a new RunIntake.
+   * Creates a new AutoForward.
    */
-  public RunIntake(double speed, Intake i) {
-    m_intake = i;
-    m_speed = speed;
-
+  private final DriveTrain m_driveTrain;
+  private final double m_timeout; //in millis
+  private double targetTime;
+  
+  public AutoForward(DriveTrain driveTrain, double timeout) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intake);
+    m_driveTrain = driveTrain;
+    m_timeout = timeout;
+    addRequirements(m_driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.toggleIntake();
+    m_driveTrain.stop();
+    targetTime = System.currentTimeMillis() + m_timeout;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.spin(m_speed);
+    if(System.currentTimeMillis() >= targetTime) {
+      end(false);
+    }
+    else {
+      m_driveTrain.setOpenLoopLeft(0.5);
+      m_driveTrain.setOpenLoopRight(0.5);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.stop();
-    m_intake.toggleIntake();
+    m_driveTrain.stop();
   }
 
   // Returns true when the command should end.

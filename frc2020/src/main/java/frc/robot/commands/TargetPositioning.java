@@ -46,6 +46,7 @@ public class TargetPositioning extends CommandBase {
   @Override
   public void initialize() {
     table.getEntry("camMode").setNumber(0);
+    table.getEntry("ledMode").setNumber(3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -92,7 +93,8 @@ public class TargetPositioning extends CommandBase {
     }
 
 
-    m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,Constants.kDriveDeadband);
+    //m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,Constants.kDriveDeadband);
+    m_driveTrain.arcadeDrive(0,steeringAdjust,Constants.kDriveDeadband);
     System.out.println("driving assist"+drivingAdjust);
     SmartDashboard.putNumber("driving assist", drivingAdjust);
   }
@@ -101,6 +103,7 @@ public class TargetPositioning extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     table.getEntry("camMode").setNumber(1);
+    table.getEntry("ledMode").setNumber(1);
   }
 
   // Returns true when the command should end.
