@@ -20,7 +20,7 @@ import frc.robot.util.VisionUtils;
 public class TargetPositioning extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("limelight");
-  private static double KpTurn = 0.08;
+  private static double KpTurn = 0.1;
   private static double KpDistance = 0.08;
   private static double min_command = 0.05;
   // the range you want.

@@ -32,7 +32,7 @@ public class Spindexer extends SubsystemBase {
     spindexerMotor.setInverted(false);
     spindexerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     spindexerMotor.setNeutralMode(NeutralMode.Brake);
-    spindexerMotor.setSensorPhase(true);
+    spindexerMotor.setSensorPhase(false);
   }
 
   public void spinClockwise(double speed) {
@@ -53,6 +53,19 @@ public class Spindexer extends SubsystemBase {
 
   public void resetEncoder() {
     spindexerMotor.setSelectedSensorPosition(0);
+  }
+
+  public void configPIDProfile(int profile, double fVal, double pVal, double iVal, double dVal) {
+    spindexerMotor.selectProfileSlot(profile, 0);
+    spindexerMotor.config_kF(0, fVal, 20);
+    spindexerMotor.config_kP(0, pVal, 20);
+    spindexerMotor.config_kI(0, iVal, 20);
+    spindexerMotor.config_kD(0, dVal, 20);
+    spindexerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, profile, 20);
+  }
+
+  public void moveToPosition(int ticks) {
+    spindexerMotor.set(ControlMode.Position, ticks);
   }
 
   @Override
