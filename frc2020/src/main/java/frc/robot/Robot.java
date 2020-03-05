@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private DriveTrain m_driveTrain;
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final Spindexer m_spindexer = new Spindexer();
@@ -55,12 +56,16 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_driveTrain = new DriveTrain(Constants.kLeftMasterPort, Constants.kLeftFollowerPort, Constants.kLeftFollowerPort2, 
+    Constants.kRightMasterPort, Constants.kRightFollowerPort, Constants.kRightFollowerPort2);
 
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
     m_spindexer.resetEncoder();
+
+    m_driveTrain.zeroEncoders();
   }
 
   /**
