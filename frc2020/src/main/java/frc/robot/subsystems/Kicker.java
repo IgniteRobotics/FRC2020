@@ -15,50 +15,50 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Intake extends SubsystemBase {
-  private final WPI_VictorSPX intakeMotor;
-  private final Solenoid intakePistonSolenoid;
+public class Kicker extends SubsystemBase {
+  
+  private final WPI_VictorSPX kickerMotor;
+  private final Solenoid kickerSolenoid;
 
   private boolean isExtended;
 
   /**
-   * Creates a new Intake.
+   * Creates a new Kicker.
    */
-  public Intake() {
-    intakeMotor = new WPI_VictorSPX(Constants.kIntakeMotorPort);
-    intakeMotor.setInverted(false);
-    intakeMotor.setNeutralMode(NeutralMode.Brake);
+  public Kicker() {
+    kickerMotor = new WPI_VictorSPX(Constants.kKickerMotorPort);
+    kickerMotor.setInverted(false);
+    kickerMotor.setNeutralMode(NeutralMode.Brake);
 
     isExtended = false;
 
-    intakePistonSolenoid = new Solenoid(Constants.kIntakeSolenoidPort);
+    kickerSolenoid = new Solenoid(Constants.kKickerSolenoidPort);
   }
 
-  private void extendIntake() {
+  private void extendKicker() {
     isExtended = true;
-    intakePistonSolenoid.set(true);
+    kickerSolenoid.set(true);
   }
 
-  private void retractIntake() {
+  private void retractKicker() {
     isExtended = false;
-    intakePistonSolenoid.set(false);
+    kickerSolenoid.set(false);
   }
-
-  public void toggleIntake() {
+  public void toggleKicker() {
     if(isExtended) {
-      retractIntake();
+      retractKicker();
     }
     else {
-      extendIntake();
+      extendKicker();
     }
   }
 
-  public void spin(double speed) {
-    intakeMotor.set(ControlMode.PercentOutput, speed);
+  public void spinKickerWheel(double speed) {
+    kickerMotor.set(ControlMode.PercentOutput, speed);
   }
 
-  public void stop() {
-    intakeMotor.set(ControlMode.PercentOutput, 0);
+  public void stopKicker() {
+    kickerMotor.set(ControlMode.PercentOutput, 0.0);
   }
 
   @Override

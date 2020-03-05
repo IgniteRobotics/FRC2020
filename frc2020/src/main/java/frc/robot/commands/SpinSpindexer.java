@@ -14,13 +14,15 @@ public class SpinSpindexer extends CommandBase {
   private final Spindexer m_spindexer;
 
   private boolean isCounterClockWise;
+
+  private double m_speed;
   /**
    * Creates a new SpinSpindexer.
    */
   public SpinSpindexer(boolean icc, double speed, Spindexer sd) {
     m_spindexer = sd;
     isCounterClockWise = icc;
-    m_spindexer.spindexerSpeed = speed;
+    m_speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_spindexer);
   }
@@ -35,10 +37,10 @@ public class SpinSpindexer extends CommandBase {
   @Override
   public void execute() {
     if(isCounterClockWise) {
-      m_spindexer.spinCounterClockwise();
+      m_spindexer.spinCounterClockwise(m_speed);
     }
     else {
-      m_spindexer.spinClockwise();
+      m_spindexer.spinClockwise(m_speed);
     }
   }
 

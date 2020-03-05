@@ -20,7 +20,6 @@ public class Shooter extends SubsystemBase {
   
   private WPI_TalonSRX motor;
   private WPI_VictorSPX follow1;
-  private WPI_VictorSPX follow2;
   
   /**
    * Creates a new motor1.
@@ -42,16 +41,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setVelocity(double Velocity){
-
     motor.set(ControlMode.Velocity, Velocity);
-    
-
-
   }
   public void setpower(double power){
-
     motor.set(ControlMode.PercentOutput, power);
-
   }
   
 
@@ -61,6 +54,7 @@ public class Shooter extends SubsystemBase {
 
     /* Config sensor used for Primary PID [Velocity] */
     motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,kPIDLoopIdx, kTimeoutMs);
+    motor.setSensorPhase(true);
     
     
     
@@ -80,6 +74,7 @@ public class Shooter extends SubsystemBase {
 
   public void defaultConfig(){
     motor.configFactoryDefault();
+    motor.setSensorPhase(true);
         
     motor.setNeutralMode(NeutralMode.Coast);
     follow1.setNeutralMode(NeutralMode.Coast);
@@ -88,6 +83,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public int getvelocity(){
+   System.out.println(""+motor.getSelectedSensorPosition());
    return(motor.getSelectedSensorVelocity());
   }
 

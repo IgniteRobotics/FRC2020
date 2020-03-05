@@ -24,12 +24,14 @@ public class Shooterspin extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    shooter.defaultConfig();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setpower(0.5);;
+    shooter.getvelocity();
+    shooter.setpower(0.75);
   }
 
   // Called once the command ends or is interrupted.

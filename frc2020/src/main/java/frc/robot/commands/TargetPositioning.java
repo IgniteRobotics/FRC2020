@@ -20,7 +20,7 @@ import frc.robot.util.VisionUtils;
 public class TargetPositioning extends CommandBase {
   private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private static NetworkTable table = inst.getTable("limelight");
-  private static double KpTurn = 0.08;
+  private static double KpTurn = 0.1;
   private static double KpDistance = 0.08;
   private static double min_command = 0.05;
   // the range you want.
@@ -46,6 +46,7 @@ public class TargetPositioning extends CommandBase {
   @Override
   public void initialize() {
     table.getEntry("camMode").setNumber(0);
+    table.getEntry("ledMode").setNumber(3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -92,7 +93,8 @@ public class TargetPositioning extends CommandBase {
     }
 
 
-    m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,Constants.kDriveDeadband);
+    //m_driveTrain.arcadeDrive(-drivingAdjust,steeringAdjust,Constants.kDriveDeadband);
+    m_driveTrain.arcadeDrive(0,steeringAdjust,Constants.kDriveDeadband);
     System.out.println("driving assist"+drivingAdjust);
     SmartDashboard.putNumber("driving assist", drivingAdjust);
   }
@@ -101,6 +103,7 @@ public class TargetPositioning extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     table.getEntry("camMode").setNumber(1);
+    table.getEntry("ledMode").setNumber(1);
   }
 
   // Returns true when the command should end.

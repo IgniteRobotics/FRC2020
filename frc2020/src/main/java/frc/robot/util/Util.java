@@ -28,6 +28,11 @@ public class Util {
 		}
 	}
 
+	public static double getRevolutionsFromTicks(double encoder_ticks) {
+		double revolutions =  encoder_ticks / ENCODER_TICKS_PER_REVOLUTION;
+		return revolutions;
+	}
+
 	public static double getEncoderTicksFromInches(double inches) {
 		return getEncoderTicksFromInches(WHEEL_DIAMETER, inches);
 	}
@@ -49,9 +54,9 @@ public class Util {
 	private static double getInchesFromEncoderTicks(int wheel_diameter, double encoder_ticks) {
 
 		double inchesPerRevolution = Math.PI * wheel_diameter;
-		double revolutions = encoder_ticks * ENCODER_TICKS_PER_REVOLUTION;
+		double revolutions = getRevolutionsFromTicks(encoder_ticks);
 
-		double inches = (revolutions) / (inchesPerRevolution);
+		double inches = revolutions * inchesPerRevolution;
 
 		return inches;
 	}
