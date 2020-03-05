@@ -8,46 +8,36 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Shooter;
 
-public class AutoForward extends CommandBase {
+public class Shooterspin extends CommandBase {
   /**
-   * Creates a new AutoForward.
+   * Creates a new shooterspin.
    */
-  private final DriveTrain m_driveTrain;
-  private final double m_timeout; //in millis
-  private double targetTime;
-  
-  public AutoForward(DriveTrain driveTrain, double timeout) {
+  private final Shooter shooter;
+  public Shooterspin(Shooter shooter) {
+    this.shooter = shooter;
+    addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
-    m_driveTrain = driveTrain;
-    m_timeout = timeout;
-    addRequirements(m_driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_driveTrain.stop();
-    targetTime = System.currentTimeMillis() + m_timeout;
+    shooter.defaultConfig();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(System.currentTimeMillis() >= targetTime) {
-      end(false);
-    }
-    else {
-      m_driveTrain.setOpenLoopLeft(0.25);
-      m_driveTrain.setOpenLoopRight(0.25);
-    }
+    shooter.getvelocity();
+    shooter.setpower(0.75);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_driveTrain.stop();
+    shooter.setpower(0);
   }
 
   // Returns true when the command should end.

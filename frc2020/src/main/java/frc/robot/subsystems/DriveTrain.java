@@ -68,9 +68,6 @@ public class DriveTrain extends SubsystemBase {
 
     // leftFollower2.setInverted(InvertType.FollowMaster);
     // rightFollower2.setInverted(InvertType.FollowMaster);
-
-    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
   }
 
   @Override
@@ -173,5 +170,10 @@ public class DriveTrain extends SubsystemBase {
       return -1.0;
     }
     return value;
+  }
+
+  public void stop() {
+    leftMaster.set(0);
+    rightMaster.set(0);
   }
 }

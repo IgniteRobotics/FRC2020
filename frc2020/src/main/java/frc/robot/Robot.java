@@ -12,17 +12,15 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Spindexer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -38,6 +36,7 @@ public class Robot extends TimedRobot {
   private DriveTrain m_driveTrain;
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private final Spindexer m_spindexer = new Spindexer();
 
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
 
@@ -64,6 +63,7 @@ public class Robot extends TimedRobot {
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
+    m_spindexer.resetEncoder();
 
     m_driveTrain.zeroEncoders();
   }
@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Blue", detectedColor.blue);
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
+    SmartDashboard.putNumber("Spindexer Encoder", m_spindexer.getEncoderPosition());
   }
 
   /**

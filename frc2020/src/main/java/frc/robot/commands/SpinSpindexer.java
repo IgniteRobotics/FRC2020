@@ -8,46 +8,46 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Spindexer;
 
-public class AutoForward extends CommandBase {
+public class SpinSpindexer extends CommandBase {
+  private final Spindexer m_spindexer;
+
+  private boolean isCounterClockWise;
+
+  private double m_speed;
   /**
-   * Creates a new AutoForward.
+   * Creates a new SpinSpindexer.
    */
-  private final DriveTrain m_driveTrain;
-  private final double m_timeout; //in millis
-  private double targetTime;
-  
-  public AutoForward(DriveTrain driveTrain, double timeout) {
+  public SpinSpindexer(boolean icc, double speed, Spindexer sd) {
+    m_spindexer = sd;
+    isCounterClockWise = icc;
+    m_speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
-    m_driveTrain = driveTrain;
-    m_timeout = timeout;
-    addRequirements(m_driveTrain);
+    addRequirements(m_spindexer);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_driveTrain.stop();
-    targetTime = System.currentTimeMillis() + m_timeout;
+    m_spindexer.resetEncoder();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(System.currentTimeMillis() >= targetTime) {
-      end(false);
+    if(isCounterClockWise) {
+      m_spindexer.spinCounterClockwise(m_speed);
     }
     else {
-      m_driveTrain.setOpenLoopLeft(0.25);
-      m_driveTrain.setOpenLoopRight(0.25);
+      m_spindexer.spinClockwise(m_speed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_driveTrain.stop();
+    m_spindexer.stop();
   }
 
   // Returns true when the command should end.
