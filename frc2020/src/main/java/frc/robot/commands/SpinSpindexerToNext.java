@@ -21,33 +21,32 @@ public class SpinSpindexerToNext extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     m_spindexer = spindexer;
     addRequirements(m_spindexer);
-    m_spindexer.resetEncoder();
-
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_spindexer.stop();
+    m_spindexer.configPIDProfile(0, 0, 1, 0, 0);
     m_spindexer.resetEncoder();
-    m_spindexer.configPIDProfile(0, 0, 0.0295, 0, 0);
     currentTime = System.currentTimeMillis();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_spindexer.moveToPosition(encoderTicksPerFifthRev);
+    m_spindexer.setMotionMagicPosition(encoderTicksPerFifthRev);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_spindexer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false || System.currentTimeMillis() > currentTime + 1000;
+    return m_spindexer.isMotionMagicDone() || System.currentTimeMillis() > currentTime + 1000;
   }
 }

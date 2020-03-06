@@ -124,7 +124,7 @@ public class RobotContainer {
     
     new JoystickButton(m_manipController, Constants.BUTTON_LEFT_STICK).whileHeld(new ParallelCommandGroup(new Velocityshoot(5700, m_shooter), new RunKicker(0.7, m_kicker), new SpinIntake(0.3, m_intake))); //17 ft
     new JoystickButton(m_manipController, Constants.BUTTON_START).whileHeld(new RunKicker(0.5, m_kicker));
-    new JoystickButton(m_manipController, Constants.BUTTON_BACK).whenPressed(new SpinSpindexerToNext(m_spindexer));
+    new JoystickButton(m_manipController, Constants.BUTTON_BACK).whenPressed(new SpinSpindexerToNext(m_spindexer).andThen(new InstantCommand(m_spindexer::resetEncoder)));
     // new JoystickButton(m_manipController, Constants.BUTTON_RIGHT_BUMPER).whileHeld(new ParallelCommandGroup(new ParallelCommandGroup(new RunKicker(0.7, m_kicker), new Velocityshoot(5500, m_shooter), new SpinIntake(0.3, m_intake)), 
     //                                                                                 new SequentialCommandGroup(new Wait(1000).withTimeout(5), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
     //                                                                                 new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
@@ -145,16 +145,42 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    // return m_auto;
+    /* return new ParallelCommandGroup(new ParallelCommandGroup(new RunKicker(0.7, m_kicker), new Velocityshoot(5500, m_shooter), new SpinIntake(0.3, m_intake)), 
+    new SequentialCommandGroup(new AutoForward(m_driveTrain, 500).withTimeout(1), new Wait(1000).withTimeout(5), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new SpinSpindexerToNext(m_spindexer), new Wait(1000).withTimeout(1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new SpinSpindexerToNext(m_spindexer), new Wait(1000).withTimeout(1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
+    new Wait(100).withTimeout(0.1), new SpinSpindexerToNext(m_spindexer))); */ //<----This is beautiful, never delete this
+
     return new ParallelCommandGroup(new ParallelCommandGroup(new RunKicker(0.7, m_kicker), new Velocityshoot(5500, m_shooter), new SpinIntake(0.3, m_intake)), 
-    new SequentialCommandGroup(new AutoForward(m_driveTrain, 500).withTimeout(1), new Wait(1000).withTimeout(5), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
-    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
-    new Wait(100).withTimeout(0.1), new SpinSpindexerToNext(m_spindexer), new Wait(1000).withTimeout(1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
-    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
-    new Wait(100).withTimeout(0.1), new SpinSpindexerToNext(m_spindexer), new Wait(1000).withTimeout(1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
-    new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), 
-    new Wait(100).withTimeout(0.1), new SpinSpindexerToNext(m_spindexer)));
+    new SequentialCommandGroup(new AutoForward(m_driveTrain, 500).withTimeout(2), 
+    new Wait(1000).withTimeout(2), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new SpinSpindexerToNext(m_spindexer).andThen(new InstantCommand(m_spindexer::resetEncoder)), 
+    new Wait(1000).withTimeout(1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new SpinSpindexerToNext(m_spindexer).andThen(new InstantCommand(m_spindexer::resetEncoder)), 
+    new Wait(1000).withTimeout(1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), new InstantCommand(m_kicker::toggleKicker, m_kicker), new Wait(100).withTimeout(0.1), 
+    new SpinSpindexerToNext(m_spindexer).andThen(new InstantCommand(m_spindexer::resetEncoder))));
   }
 
   protected static Trajectory loadTrajectory(String trajectoryName) throws IOException {

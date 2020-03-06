@@ -10,6 +10,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -24,6 +26,10 @@ public class Spindexer extends SubsystemBase {
 
   public double spindexerSpeed = 0.5;
 
+  private final int TOLERANCE = 100;
+  private final int CRUISE_VELOCITY = 12000;
+  private final int MAX_ACCELERATION =  8000;
+
   /**
    * Creates a new Spindexer.
    */
@@ -33,6 +39,12 @@ public class Spindexer extends SubsystemBase {
     spindexerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     spindexerMotor.setNeutralMode(NeutralMode.Brake);
     spindexerMotor.setSensorPhase(false);
+    
+    spindexerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 20);
+    spindexerMotor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic, 10, 20);
+    
+    spindexerMotor.configMotionCruiseVelocity(CRUISE_VELOCITY, 10);
+    spindexerMotor.configMotionAcceleration(MAX_ACCELERATION, 10);
   }
 
   public void spinClockwise(double speed) {
@@ -66,6 +78,14 @@ public class Spindexer extends SubsystemBase {
 
   public void moveToPosition(int ticks) {
     spindexerMotor.set(ControlMode.Position, ticks);
+  }
+
+  public void setMotionMagicPosition(double position) {
+    spindexerMotor.set(ControlMode.MotionMagic, position);
+  }
+
+  public boolean isMotionMagicDone() {
+    return Math.abs(spindexerMotor.getClosedLoopTarget() - this.getEncoderPosition()) <= TOLERANCE;
   }
 
   @Override
