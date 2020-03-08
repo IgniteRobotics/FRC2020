@@ -31,7 +31,7 @@ public final class Constants {
 
 	public static final double kDriveDeadband = 0.03;
 	
-	public static final int kIntakeMotorPort = 10; //TODO find out what these actually are.
+	public static final int kIntakeMotorPort = 10;
 	public static final int kSorterMotorPort = 11;
 	public static final int kSpindexerMotorPort = 14;
 	public static final int kShooterTalonMotorPort = 13;
